@@ -18,11 +18,12 @@ import Loading from "./components/Loading/Loading.jsx";
 const router = createBrowserRouter([
     {
         element:
-            <PrivateRoute>
-                <ThemeScript>
-                    <App/>
-                </ThemeScript>
-            </PrivateRoute>,
+        // <PrivateRoute>
+            <ThemeScript>
+                <App/>
+            </ThemeScript>
+        // </PrivateRoute>
+        ,
         children: [
             {
                 path: "/",
