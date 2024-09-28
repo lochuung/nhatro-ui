@@ -13,6 +13,8 @@ import store from "./redux/store.js";
 import {ThemeScript} from "./components/ThemeScript.jsx";
 import 'react-toastify/dist/ReactToastify.css';
 import Loading from "./components/Loading/Loading.jsx";
+import Contract from './pages/contract.jsx';
+import RoomEdit from './pages/room-edit.jsx';
 
 
 const router = createBrowserRouter([
@@ -34,8 +36,13 @@ const router = createBrowserRouter([
                 element: <Rooms/>,
             },
             {
+                path: "/rooms/edit",
+                element: <RoomEdit />,
+            }
+            ,
+            {
                 path: "/contracts",
-                element: <></>,
+                element: <Contract/>,
             },
             {
                 path: "/invoices",
