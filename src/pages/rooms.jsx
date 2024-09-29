@@ -237,27 +237,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -378,27 +359,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -519,27 +481,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -660,27 +603,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -801,27 +725,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -942,27 +847,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -1083,27 +969,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -1224,27 +1091,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -1365,27 +1213,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -1506,27 +1335,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -1647,27 +1457,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -1788,27 +1579,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -1929,27 +1701,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -2070,27 +1823,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -2211,27 +1945,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -2352,27 +2067,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -2493,27 +2189,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -2634,27 +2311,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -2775,27 +2433,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -2916,27 +2555,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -3057,27 +2677,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -3198,27 +2799,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -3339,27 +2921,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -3480,27 +3043,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -3621,27 +3165,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -3762,27 +3287,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -3903,27 +3409,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
@@ -4044,27 +3531,8 @@ export default function Rooms() {
                                                                 className="dropdown-item"
                                                                 href="javascript: void(0);"
                                                             >
-                                                                Disable
+                                                                Chỉnh sửa
                                                             </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Regenerate
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                className="dropdown-item"
-                                                                href="javascript: void(0);"
-                                                            >
-                                                                Rename
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <hr className="dropdown-divider" />
                                                         </li>
                                                         <li>
                                                             <a
