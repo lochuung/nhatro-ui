@@ -133,6 +133,7 @@ export default function RoomEdit() {
                               <div className="invalid-feedback">
                                 Vui lòng nhập số lượng người ở tối đa
                               </div>
+                              
                             </div>
                             <div className="col-md">
                               <label htmlFor="country" className="form-label">
