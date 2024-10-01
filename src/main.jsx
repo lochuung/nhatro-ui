@@ -1,12 +1,10 @@
-import {StrictMode, Suspense} from 'react'
+import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
 import App from './App.jsx'
 import {createBrowserRouter} from "react-router-dom";
 import Rooms from "./pages/rooms.jsx";
 import Login from "./pages/Auth/Login.jsx";
-import {setAuthorizationToken} from "./services/AuthServices.js";
 import {RouterProvider} from "react-router";
-import PrivateRoute from "./components/PrivateRoute.jsx";
 import {Provider} from "react-redux";
 import {ToastContainer} from "react-toastify";
 import store from "./redux/store.js";
@@ -14,9 +12,9 @@ import {ThemeScript} from "./components/ThemeScript.jsx";
 import 'react-toastify/dist/ReactToastify.css';
 import Loading from "./components/Loading/Loading.jsx";
 import Contract from './pages/contract.jsx';
-import RoomEdit from './pages/room-edit.jsx';
+import RoomUpsert, {loader as roomLoader} from './pages/room-upsert.jsx';
+import PrivateRoute from "./components/PrivateRoute.jsx";
 
-    
 
 const router = createBrowserRouter([
     {
@@ -37,8 +35,9 @@ const router = createBrowserRouter([
                 element: <Rooms/>,
             },
             {
-                path: "/rooms/edit",
-                element: <RoomEdit />,
+                path: "/rooms/:id/edit",
+                element: <RoomUpsert isAdd={false}/>,
+                loader: roomLoader,
             }
             ,
             {
@@ -64,11 +63,6 @@ const router = createBrowserRouter([
             </ThemeScript>,
     }
 ]);
-
-const jwtToken = localStorage.getItem("jwtToken");
-if (jwtToken) {
-    setAuthorizationToken(jwtToken);
-}
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>

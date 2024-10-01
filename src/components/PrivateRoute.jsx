@@ -1,5 +1,7 @@
-import { Navigate } from "react-router";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
+import {useEffect} from "react";
+import {redirect, useLocation} from "react-router-dom";
+import {Navigate} from "react-router";
 
 
 const PrivateRoute = ({children}) => {
@@ -7,9 +9,7 @@ const PrivateRoute = ({children}) => {
     if (token !== null && token !== undefined) {
         return children;
     } else {
-        return (
-            <Navigate to="/login" />
-        );
+        return <Navigate to="/login"/>;
     }
 }
 
