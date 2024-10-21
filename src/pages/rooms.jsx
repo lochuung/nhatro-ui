@@ -5,7 +5,7 @@ export default function Rooms() {
     {
       id: 1,
       name: "Est Mauris Consulting",
-      price: "3.000.000đ",
+      price: "3.900.000đ",
       statusColor: "bg-danger",
       statusText: "Đang bảo trì",
       created: "01.02.22",
