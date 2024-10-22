@@ -25,6 +25,8 @@ api.interceptors.response.use(
             toast.error('Vui lòng đăng nhập để tiếp tục');
             localStorage.removeItem("accessToken");
             return redirect("/login");
+        } else {
+            toast.error(error.response.data.message);
         }
         return Promise.reject(error);
     }
