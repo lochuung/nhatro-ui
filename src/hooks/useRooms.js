@@ -1,24 +1,27 @@
 import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {fetchRooms, setCurrentPage, setStatusFilter} from '../redux/roomsReducer';
+import {fetchRooms, setCurrentPage, setStatusFilter, setSearchText} from '../redux/roomsReducer';
 
 export const useRooms = () => {
     const dispatch = useDispatch();
-    const {rooms, totalPages, currentPage, pageSize, statusFilter, loading} = useSelector((state) => state.rooms);
+    const {rooms, totalPages, currentPage, pageSize, statusFilter, loading, searchText} = useSelector((state) => state.rooms);
 
     useEffect(() => {
-        dispatch(fetchRooms({page: currentPage, size: pageSize, status: statusFilter}));
-    }, [dispatch, currentPage, pageSize, statusFilter]);
+        dispatch(fetchRooms({page: currentPage, size: pageSize, status: statusFilter, search: searchText}));
+    }, [dispatch, currentPage, pageSize, statusFilter, searchText]);
 
     const handlePageChange = (pageNumber) => {
         dispatch(setCurrentPage(pageNumber));
-        dispatch(fetchRooms({page: pageNumber, size: pageSize, status: statusFilter}));
     };
 
     const handleFilterChange = (newStatus) => {
         dispatch(setStatusFilter(newStatus));
         dispatch(setCurrentPage(0));
-        dispatch(fetchRooms({page: 0, size: pageSize, status: newStatus}));
+    };
+
+    const handleSearch = (newSearchText) => {
+        dispatch(setCurrentPage(0));
+        dispatch(setSearchText(newSearchText));
     };
 
     return {
@@ -30,5 +33,6 @@ export const useRooms = () => {
         loading,
         handlePageChange,
         handleFilterChange,
+        handleSearch
     };
 };

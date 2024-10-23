@@ -19,11 +19,11 @@ import PrivateRoute from "./components/PrivateRoute.jsx";
 const router = createBrowserRouter([
     {
         element:
-        // <PrivateRoute>
+        <PrivateRoute>
             <ThemeScript>
                 <App/>
             </ThemeScript>
-        // </PrivateRoute>
+        </PrivateRoute>
         ,
         children: [
             {
