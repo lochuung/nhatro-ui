@@ -1,17 +1,17 @@
-import {useState, useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {fetchRooms, setCurrentPage, setStatusFilter} from '../redux/roomsReducer';
+import {useState} from 'react';
 import RoomServices from '../services/RoomServices';
 import {Form, Input, Modal, Select, Spin, Button} from 'antd';
 import RoomForm from "../components/room/RoomForm.jsx";
 import DeleteModal from "../components/DeleteModal.jsx";
 import {useRooms} from "../hooks/useRooms.js";
+import SearchInput from "../components/SearchInput.jsx";
+import SortableRoomsTable from "../components/room/SortableRoomsTable.jsx";
 
 const {Option} = Select;
 
 export default function Rooms() {
 
-    const {rooms, totalPages, currentPage, statusFilter, loading, handlePageChange, handleFilterChange} = useRooms();
+    const {rooms, totalPages, currentPage, statusFilter, loading, handlePageChange, handleFilterChange, handleSearch} = useRooms();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -28,6 +28,7 @@ export default function Rooms() {
     });
 
     const openRoomForm = (room = null) => {
+        debugger;
         if (room) {
             setCurrentRoom(room);
             setIsEditMode(true);
@@ -89,6 +90,8 @@ export default function Rooms() {
                         <div className="card-header border-0">
                             <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-end">
                                 <h2 className="card-header-title h4 text-uppercase">Danh sách phòng</h2>
+                                {/* Ant Design Search Input */}
+                                <SearchInput onSearch={handleSearch} />
                                 <select
                                     className="form-control mw-md-300px ms-md-auto mt-5 mt-md-0 mb-3 mb-md-0"
                                     value={statusFilter}
@@ -115,51 +118,77 @@ export default function Rooms() {
                                 </div>
                             ) : rooms.length === 0 ? (
                                 <div className="text-center my-4">
-                                    <h3>Không có phòng nào trống</h3>
+                                    <h3>Không tìm thấy phòng nào</h3>
                                 </div>
                             ) : (
-                                <table className="table align-middle table-hover table-nowrap mb-0">
-                                    <thead className="thead-light">
-                                    <tr>
-                                        <th>Tên phòng</th>
-                                        <th>Giá niêm yết</th>
-                                        <th>Trạng thái</th>
-                                        <th>Số thành viên</th>
-                                        <th className="text-end"></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {rooms.map((room) => (
-                                        <tr key={room.id}>
-                                            <td>{room.name}</td>
-                                            <td>
-                                                {new Intl.NumberFormat('vi-VN', {
-                                                    style: 'currency',
-                                                    currency: 'VND',
-                                                }).format(room.price)}
-                                            </td>
-                                            <td>
-                                                <span
-                                                    className={`legend-circle ${room.status === 'RENTED' ? 'bg-danger' : 'bg-success'}`}/>
-                                                {room.status === 'RENTED' ? 'Đã cho thuê' : 'Trống'}
-                                            </td>
-                                            <td>
-                                                {room.contracts.find((contract) => contract.status === 'OPENING')?.numberOfPeople || '0'}
-                                            </td>
-                                            <td>
-                                                <button className="btn btn-sm btn-secondary"
-                                                        onClick={() => openRoomForm(room)}>
-                                                    Chỉnh sửa
-                                                </button>
-                                                <button className="btn btn-sm btn-danger ms-2"
-                                                        onClick={() => openDeleteConfirm(room.id)}>
-                                                    Xóa
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
+                                // <table className="table align-middle table-hover table-nowrap mb-0">
+                                //     <thead className="thead-light">
+                                //     <tr>
+                                //         <th>
+                                //             <a href="javascript: void(0);" className="text-muted list-sort"
+                                //                data-sort="name">
+                                //                 Tên phòng
+                                //             </a>
+                                //         </th>
+                                //         <th>
+                                //             <a href="javascript: void(0);" className="text-muted list-sort"
+                                //                data-sort="price">
+                                //                 Giá
+                                //             </a>
+                                //         </th>
+                                //         <th>
+                                //             <a href="javascript: void(0);" className="text-muted list-sort"
+                                //                data-sort="status">
+                                //                 Trạng thái
+                                //             </a>
+                                //         </th>
+                                //         <th>
+                                //             <a href="javascript: void(0);" className="text-muted list-sort"
+                                //                data-sort="numberOfPeople">
+                                //                 Số người
+                                //             </a>
+                                //         </th>
+                                //         <th className="text-end"></th>
+                                //     </tr>
+                                //     </thead>
+                                //     <tbody  className="list">
+                                //     {rooms.map((room) => (
+                                //         <tr key={room.id}>
+                                //             <td className="name">{room.name}</td>
+                                //             <td className="price">
+                                //                 {new Intl.NumberFormat('vi-VN', {
+                                //                     style: 'currency',
+                                //                     currency: 'VND',
+                                //                 }).format(room.price)}
+                                //             </td>
+                                //             <td className="status">
+                                //                 <span
+                                //                     className={`legend-circle ${room.status === 'RENTED' ? 'bg-danger' : 'bg-success'}`}/>
+                                //                 {room.status === 'RENTED' ? 'Đã cho thuê' : 'Trống'}
+                                //             </td>
+                                //             <td className="numberOfPeople">
+                                //                 {room.contracts.find((contract) => contract.status === 'OPENING')?.numberOfPeople || '0'}
+                                //             </td>
+                                //             <td>
+                                //                 <button className="btn btn-sm btn-secondary"
+                                //                         onClick={() => openRoomForm(room)}>
+                                //                     Chỉnh sửa
+                                //                 </button>
+                                //                 <button className="btn btn-sm btn-danger ms-2"
+                                //                         onClick={() => openDeleteConfirm(room.id)}>
+                                //                     Xóa
+                                //                 </button>
+                                //             </td>
+                                //         </tr>
+                                //     ))}
+                                //     </tbody>
+                                // </table>
+                                <SortableRoomsTable
+                                    rooms={rooms}
+                                    loading={loading}
+                                    openRoomForm={openRoomForm}
+                                    openDeleteConfirm={openDeleteConfirm}
+                                />
                             )}
                         </div>
 

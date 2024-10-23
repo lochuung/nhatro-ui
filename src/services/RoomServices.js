@@ -2,11 +2,15 @@ import ApiUrl from "../utils/api-url.js";
 import api from "../utils/api.js";
 
 export default class RoomServices {
-    static getRooms = (page = 0, size = 10, status = null) => {
+    static getRooms = (page = 0, size = 10, status = null, search = null) => {
         // The API expects a POST request with page and size in the body
         const data = {page, size};
         if (status) {
             data['filters'] = [{key: 'status', operator: 'EQUAL', fieldType: 'STRING', value: status}];
+        }
+        if (search) {
+            data['filters'] = data['filters'] || [];
+            data['filters'].push({key: 'name', operator: 'LIKE', fieldType: 'STRING', value: search});
         }
         return api.post(`${ApiUrl.crudRoom}/search`, data);
     };
