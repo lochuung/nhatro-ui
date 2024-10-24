@@ -1,72 +1,110 @@
-import {useState} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 import RoomServices from '../services/RoomServices';
-import {Form, Input, Modal, Select, Spin, Button} from 'antd';
+import {Spin} from 'antd';
 import RoomForm from "../components/room/RoomForm.jsx";
 import DeleteModal from "../components/DeleteModal.jsx";
-import {useRooms} from "../hooks/useRooms.js";
 import SearchInput from "../components/SearchInput.jsx";
-import SortableRoomsTable from "../components/room/SortableRoomsTable.jsx";
-
-const {Option} = Select;
+import RoomsTable from "../components/room/RoomTable.jsx";
+import useRoomsQuery from "../hooks/useRoomsQuery.js";
+import useModal from "../hooks/useModal.js";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 
 export default function Rooms() {
-
-    const {rooms, totalPages, currentPage, statusFilter, loading, handlePageChange, handleFilterChange, handleSearch} = useRooms();
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [isEditMode, setIsEditMode] = useState(false);
-    const [selectedRoomId, setSelectedRoomId] = useState(null);
-    const [currentRoom, setCurrentRoom] = useState({
-        name: '',
-        description: '',
-        price: '',
-        status: 'AVAILABLE',
-        capacity: 0,
-        type: '',
-        branchId: 1,
+    // Consolidate filters into one state to reduce multiple updates
+    const [filters, setFilters] = useState({
+        page: 0,
+        size: 10,
+        status: null,
+        search: '',
+        sort: null,
     });
 
-    const openRoomForm = (room = null) => {
-        debugger;
-        if (room) {
-            setCurrentRoom(room);
-            setIsEditMode(true);
-        } else {
-            setCurrentRoom({
-                name: '',
-                description: '',
-                price: '',
-                status: 'AVAILABLE',
-                capacity: 0,
-                type: '',
-                branchId: 1
-            });
-            setIsEditMode(false);
-        }
-        setIsModalOpen(true);
+    const queryClient = useQueryClient();
+
+    // Destructure filters and pass them to the query
+    const { page, size, status, search, sort } = filters;
+
+    const { data, isLoading } = useRoomsQuery({ page, size, status, search, sort });
+    const rooms = data?.rooms || [];
+    const pagination = data?.pagination || { totalPages: 1, currentPage: 0, pageSize: 10 };
+    const { totalPages } = pagination;
+
+    const [selectedRoomId, setSelectedRoomId] = useState(null);
+    const deleteModal = useModal();
+    const roomFormModal = useModal();
+
+    // Handlers: Memoized to prevent unnecessary re-renders
+    const handlePageChange = useCallback((pageNumber) => {
+        setFilters((prev) => ({ ...prev, page: pageNumber }));
+    }, []);
+
+    const handleFilterChange = useCallback((newStatus) => {
+        setFilters((prev) => ({ ...prev, status: newStatus, page: 0 }));
+    }, []);
+
+    const handleSearch = useCallback((newSearchText) => {
+        setFilters((prev) => ({ ...prev, search: newSearchText, page: 0 }));
+    }, []);
+
+    const handleSort = useCallback(({ column, direction }) => {
+        setFilters((prev) => ({
+            ...prev,
+            sort: direction ? { column, direction } : null,
+        }));
+    }, []);
+
+    // Mutation for saving or updating a room
+    const saveOrUpdateMutation = useMutation({
+        mutationFn: (values) => {
+            if (roomFormModal.isEditMode) {
+                return RoomServices.saveOrUpdateRoom(roomFormModal.selectedRoom.id, values);
+            } else {
+                return RoomServices.createRoom(values);
+            }
+        },
+        onSuccess: () => {
+            roomFormModal.closeModal();
+            queryClient.invalidateQueries(['rooms']); // Invalidate queries on success
+        },
+    });
+
+    const handleRoomFormSubmit = (values) => {
+        saveOrUpdateMutation.mutate(values);
     };
 
-    const handleRoomFormSubmit = async (values) => {
-        if (isEditMode) {
-            await RoomServices.saveOrUpdateRoom(currentRoom.id, values);
-        } else {
-            await RoomServices.createRoom(values);
-        }
-        setIsModalOpen(false);
-        handleFilterChange(statusFilter); // Refresh room list after add/update
-    };
+    // Mutation for deleting a room
+    const deleteRoomMutation = useMutation({
+        mutationFn: (roomId) => RoomServices.deleteRoom(roomId),
+        onSuccess: () => {
+            deleteModal.closeModal();
+            queryClient.invalidateQueries(['rooms']);
+            // Adjust pagination if the last item of the page was deleted
+            if (rooms.length === 1 && page > 0) {
+                setFilters((prev) => ({ ...prev, page: prev.page - 1 }));
+            }
+        },
+    });
 
+    // Open delete confirmation modal
     const openDeleteConfirm = (roomId) => {
         setSelectedRoomId(roomId);
-        setIsDeleteModalOpen(true);
+        deleteModal.openModal();
     };
 
-    const handleDeleteConfirm = async () => {
-        await RoomServices.deleteRoom(selectedRoomId);
-        setIsDeleteModalOpen(false);
-        handleFilterChange(statusFilter); // Refresh room list after deletion
+    const handleDeleteConfirm = () => {
+        deleteRoomMutation.mutate(selectedRoomId);
     };
+
+    // Memoize pagination buttons to avoid unnecessary re-renders
+    const paginationButtons = useMemo(() => (
+        Array.from({ length: totalPages }, (_, index) => (
+            <li key={index} className={`page-item ${page === index ? 'active' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(index)}>
+                    {index + 1}
+                </button>
+            </li>
+        ))
+    ), [totalPages, page, handlePageChange]);
 
     return (
         <div className="container-fluid">
@@ -75,7 +113,7 @@ export default function Rooms() {
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item">
-                            <a href="javascript: void(0);">Trang chủ</a>
+                            <a href="#">Trang chủ</a>
                         </li>
                         <li className="breadcrumb-item active" aria-current="page">
                             Danh sách phòng
@@ -90,29 +128,25 @@ export default function Rooms() {
                         <div className="card-header border-0">
                             <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-end">
                                 <h2 className="card-header-title h4 text-uppercase">Danh sách phòng</h2>
-                                {/* Ant Design Search Input */}
-                                <SearchInput onSearch={handleSearch} />
+                                <SearchInput onSearch={handleSearch}/>
                                 <select
                                     className="form-control mw-md-300px ms-md-auto mt-5 mt-md-0 mb-3 mb-md-0"
-                                    value={statusFilter}
-                                    onChange={(e) => {
-                                        const newStatus = e.target.value;
-                                        handleFilterChange(newStatus);
-                                    }}
+                                    value={status || ''}
+                                    onChange={(e) => handleFilterChange(e.target.value)}
                                 >
                                     <option value="">Tất cả</option>
                                     <option value="RENTED">Đã cho thuê</option>
                                     <option value="AVAILABLE">Còn trống</option>
                                 </select>
                                 <button type="button" className="btn btn-primary ms-md-4"
-                                        onClick={() => openRoomForm()}>
+                                        onClick={() => roomFormModal.openModal()}>
                                     Thêm mới
                                 </button>
                             </div>
                         </div>
 
                         <div className="table-responsive">
-                            {loading ? (
+                            {isLoading ? (
                                 <div className="text-center">
                                     <Spin size="large"/>
                                 </div>
@@ -121,109 +155,40 @@ export default function Rooms() {
                                     <h3>Không tìm thấy phòng nào</h3>
                                 </div>
                             ) : (
-                                // <table className="table align-middle table-hover table-nowrap mb-0">
-                                //     <thead className="thead-light">
-                                //     <tr>
-                                //         <th>
-                                //             <a href="javascript: void(0);" className="text-muted list-sort"
-                                //                data-sort="name">
-                                //                 Tên phòng
-                                //             </a>
-                                //         </th>
-                                //         <th>
-                                //             <a href="javascript: void(0);" className="text-muted list-sort"
-                                //                data-sort="price">
-                                //                 Giá
-                                //             </a>
-                                //         </th>
-                                //         <th>
-                                //             <a href="javascript: void(0);" className="text-muted list-sort"
-                                //                data-sort="status">
-                                //                 Trạng thái
-                                //             </a>
-                                //         </th>
-                                //         <th>
-                                //             <a href="javascript: void(0);" className="text-muted list-sort"
-                                //                data-sort="numberOfPeople">
-                                //                 Số người
-                                //             </a>
-                                //         </th>
-                                //         <th className="text-end"></th>
-                                //     </tr>
-                                //     </thead>
-                                //     <tbody  className="list">
-                                //     {rooms.map((room) => (
-                                //         <tr key={room.id}>
-                                //             <td className="name">{room.name}</td>
-                                //             <td className="price">
-                                //                 {new Intl.NumberFormat('vi-VN', {
-                                //                     style: 'currency',
-                                //                     currency: 'VND',
-                                //                 }).format(room.price)}
-                                //             </td>
-                                //             <td className="status">
-                                //                 <span
-                                //                     className={`legend-circle ${room.status === 'RENTED' ? 'bg-danger' : 'bg-success'}`}/>
-                                //                 {room.status === 'RENTED' ? 'Đã cho thuê' : 'Trống'}
-                                //             </td>
-                                //             <td className="numberOfPeople">
-                                //                 {room.contracts.find((contract) => contract.status === 'OPENING')?.numberOfPeople || '0'}
-                                //             </td>
-                                //             <td>
-                                //                 <button className="btn btn-sm btn-secondary"
-                                //                         onClick={() => openRoomForm(room)}>
-                                //                     Chỉnh sửa
-                                //                 </button>
-                                //                 <button className="btn btn-sm btn-danger ms-2"
-                                //                         onClick={() => openDeleteConfirm(room.id)}>
-                                //                     Xóa
-                                //                 </button>
-                                //             </td>
-                                //         </tr>
-                                //     ))}
-                                //     </tbody>
-                                // </table>
-                                <SortableRoomsTable
+                                <RoomsTable
                                     rooms={rooms}
-                                    loading={loading}
-                                    openRoomForm={openRoomForm}
+                                    loading={isLoading}
+                                    openRoomForm={roomFormModal.openModal}
                                     openDeleteConfirm={openDeleteConfirm}
+                                    onSort={handleSort}
+                                    currentSort={sort}
                                 />
                             )}
                         </div>
 
                         <div className="card-footer">
                             <ul className="pagination justify-content-end list-pagination mb-0">
-                                {Array.from({length: totalPages}, (_, index) => (
-                                    <li key={index} className={`page-item ${currentPage === index ? 'active' : ''}`}>
-                                        <button className="page-link" onClick={() => {
-                                            handlePageChange(index);
-                                        }}>
-                                            {index + 1}
-                                        </button>
-                                    </li>
-                                ))}
+                                {paginationButtons}
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
 
-
             {/* Add/Edit Modal */}
             <RoomForm
-                visible={isModalOpen}
-                isEditMode={isEditMode}
-                currentRoom={currentRoom}
+                visible={roomFormModal.isOpen}
+                isEditMode={roomFormModal.isEditMode}
+                currentRoom={roomFormModal.selectedRoom}
                 onSubmit={handleRoomFormSubmit}
-                onCancel={() => setIsModalOpen(false)}
+                onCancel={roomFormModal.closeModal}
             />
 
             {/* Delete Confirmation Modal */}
             <DeleteModal
-                visible={isDeleteModalOpen}
+                visible={deleteModal.isOpen}
                 onConfirm={handleDeleteConfirm}
-                onCancel={() => setIsDeleteModalOpen(false)}
+                onCancel={deleteModal.closeModal}
             />
         </div>
     );

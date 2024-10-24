@@ -5,8 +5,8 @@ import RoomServices from '../services/RoomServices';
 // Thunk to fetch rooms with pagination and filtering
 export const fetchRooms = createAsyncThunk(
     'rooms/fetchRooms',
-    async ({page = 0, size = 10, status = null, search = null}) => {
-        const response = await RoomServices.getRooms(page, size, status, search);
+    async ({page = 0, size = 10, status = null, search = null, sort = null}) => {
+        const response = await RoomServices.getRooms(page, size, status, search, sort);
         return response.data;
     }
 );
@@ -21,6 +21,7 @@ const roomsSlice = createSlice({
         pageSize: 10,
         statusFilter: '',
         searchText: '',
+        sort: null,
         loading: false,
         error: null,
     },
@@ -33,6 +34,9 @@ const roomsSlice = createSlice({
         },
         setSearchText: (state, action) => {
             state.searchText = action.payload;
+        },
+        setSort: (state, action) => {
+            state.sort = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -53,5 +57,5 @@ const roomsSlice = createSlice({
 });
 
 // Export the actions and reducer
-export const {setCurrentPage, setStatusFilter, setSearchText} = roomsSlice.actions;
+export const {setCurrentPage, setStatusFilter, setSearchText, setSort} = roomsSlice.actions;
 export default roomsSlice.reducer;

@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { debounce } from 'lodash';
+import React, {useCallback, useState} from 'react';
+import {debounce} from 'lodash';
 
 const SearchInput = ({ placeholder, onSearch, debounceTime = 300 }) => {
     const [searchTerm, setSearchTerm] = useState('');
