@@ -10,25 +10,15 @@ export default function Header() {
     const navigate = useNavigate();
 
     const logoutHandler = useCallback(async () => {
-        try {
-            // Wait for logout to complete
-            AuthServices.logout();
 
-            // Preload the Login component
-            const loginModule = await import('../pages/Auth/Login.jsx');
+        // Wait for logout to complete
+        AuthServices.logout();
 
-            // Display the success toast
-            toast.success('Đăng xuất thành công!');
+        // Display the success toast
+        toast.success('Đăng xuất thành công!');
 
-            // Delay navigation to ensure the toast is visible
-            setTimeout(() => {
-                navigate('/login');
-            }, 500); // Adjust the delay as needed (500ms in this case)
-        } catch (error) {
-            // Handle any errors during logout
-            console.error('Error during logout:', error);
-            toast.error('Đăng xuất thất bại!');
-        }
+        // Redirect to the login page
+        navigate('/login');
     }, [navigate]);
 
     return (

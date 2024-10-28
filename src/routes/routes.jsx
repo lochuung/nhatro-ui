@@ -1,10 +1,10 @@
 import {lazy} from 'react';
 import PrivateRoute from '../components/PrivateRoute.jsx';
 import App from '../App.jsx';
+import Login from '../pages/Auth/Login.jsx';
 
 // Lazy-loaded components
 const Rooms = lazy(() => import('../pages/rooms.jsx'));
-const Login = lazy(() => import('../pages/Auth/Login.jsx'));
 const Contract = lazy(() => import('../pages/contract.jsx'));
 const RoomUpsert = lazy(() => import('../pages/room-upsert.jsx'));
 

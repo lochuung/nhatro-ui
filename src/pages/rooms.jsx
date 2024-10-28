@@ -10,7 +10,6 @@ import useModal from "../hooks/useModal.js";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 
 export default function Rooms() {
-    // Consolidate filters into one state to reduce multiple updates
     const [filters, setFilters] = useState({
         page: 0,
         size: 10,
