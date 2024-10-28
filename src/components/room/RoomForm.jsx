@@ -20,8 +20,8 @@ const RoomForm = ({ visible, isEditMode, currentRoom, onSubmit, onCancel }) => {
                 form.setFieldsValue({
                     name: '',
                     description: '',
+                    code: '',
                     price: '',
-                    status: 'AVAILABLE',
                     capacity: 0,
                     type: '',
                     branchId: 1
@@ -57,6 +57,13 @@ const RoomForm = ({ visible, isEditMode, currentRoom, onSubmit, onCancel }) => {
                     <Input placeholder="Nhập tên phòng" />
                 </Form.Item>
 
+                <Form.Item
+                    label="Mã phòng"
+                    name="code"
+                >
+                    <Input placeholder="Để trống để tạo tự động" disabled={isEditMode}  />
+                </Form.Item>
+
                 <Form.Item label="Mô tả" name="description">
                     {/* Replace Input.TextArea with ReactQuill for rich text editing */}
                     <ReactQuill
@@ -71,18 +78,7 @@ const RoomForm = ({ visible, isEditMode, currentRoom, onSubmit, onCancel }) => {
                     name="price"
                     rules={[{ required: true, message: 'Vui lòng nhập giá phòng!' }]}
                 >
-                    <Input type="number" placeholder="Nhập giá phòng" />
-                </Form.Item>
-
-                <Form.Item
-                    label="Trạng thái"
-                    name="status"
-                    rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
-                >
-                    <Select>
-                        <Option value="AVAILABLE">Còn trống</Option>
-                        <Option value="RENTED">Đã cho thuê</Option>
-                    </Select>
+                    <Input type="number" placeholder="Nhập giá phòng"/>
                 </Form.Item>
 
                 <Form.Item

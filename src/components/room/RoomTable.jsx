@@ -12,6 +12,10 @@ const RoomTable = ({rooms, loading, openRoomForm, openDeleteConfirm, onSort, cur
                 accessor: 'name', // column id
             },
             {
+                Header: 'Mã phòng',
+                accessor: 'code',
+            },
+            {
                 Header: 'Giá',
                 accessor: 'price',
                 Cell: ({value}) =>
