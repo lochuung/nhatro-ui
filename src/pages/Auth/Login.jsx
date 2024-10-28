@@ -4,6 +4,7 @@ import {Form} from 'antd';
 import Button from 'react-bootstrap-button-loader';
 import {toast} from 'react-toastify';
 import {Navigate, useNavigate} from "react-router";
+import {FaEye, FaEyeSlash} from "react-icons/fa";
 
 export default function Login() {
     useEffect(() => {
@@ -11,6 +12,8 @@ export default function Login() {
     });
     const navigate = useNavigate();
     const [isDone, setIsDone] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
+
     const [form] = Form.useForm();
 
     if (localStorage.getItem('accessToken')) {
@@ -102,19 +105,18 @@ export default function Login() {
                                             {" "}
                                             {/* / .row */}
                                             {/* Input */}
-                                            <div className="input-group input-group-merge">
+                                            <div className="input-group">
                                                 <input
-                                                    type="password"
+                                                    type={showPassword ? 'text' : 'password'}
                                                     className="form-control"
-                                                    autoComplete="off"
-                                                    data-toggle-password-input=""
                                                     placeholder="Mật khẩu"
                                                 />
-                                                <button
-                                                    type="button"
-                                                    className="input-group-text px-4 text-secondary link-primary"
-                                                    data-toggle-password=""
-                                                />
+                                                <span
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="input-group-text px-4 cursor-pointer"
+                                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </span>
                                             </div>
                                         </div>
                                     </Form.Item>
