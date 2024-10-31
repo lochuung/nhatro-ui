@@ -4,7 +4,7 @@ export default function Rooms() {
   const [rooms, setRooms] = useState([
     {
       id: 1,
-      name: "Est Mauris Consulting",
+      name: "Phòng 101",
       price: "3.000.000đ",
       statusColor: "bg-danger",
       statusText: "Đang bảo trì",
@@ -13,12 +13,21 @@ export default function Rooms() {
     },
     {
       id: 2,
-      name: "A Limited",
+      name: "Phòng 102",
       price: "9.500.000đ",
       statusColor: "bg-success",
       statusText: "Cho thuê",
       created: "02.11.22",
       type: "Chung cư"
+    },
+    {
+      id: 3,
+      name: "Phòng 103",
+      price: "5.000.000đ",
+      statusColor: "bg-success",
+      statusText: "Trống",
+      created: "02.11.22",
+      type: "Phòng trọ"
     }
   ]);
 
@@ -32,7 +41,7 @@ export default function Rooms() {
 
   const handleAdd = () => {
     setCurrentRoom({ name: "", price: "", statusColor: "", statusText: "", type: "" });
-    setIsEditMode(false); 
+    setIsEditMode(false);
     setIsModalOpen(true);
   };
 
@@ -110,7 +119,7 @@ export default function Rooms() {
     color: "white",
     padding: "10px 20px",
     border: "none",
-    borderRadius: "50px", 
+    borderRadius: "50px",
     cursor: "pointer",
     fontSize: "14px",
     fontWeight: "600",
@@ -154,7 +163,7 @@ export default function Rooms() {
                 <button
                   type="button"
                   className="btn btn-primary ms-md-4"
-                  onClick={handleAdd} 
+                  onClick={handleAdd}
                 >
                   Thêm mới
                 </button>
@@ -224,6 +233,15 @@ export default function Rooms() {
                                 Xóa
                               </a>
                             </li>
+                            <li>
+                              <a
+                                className="dropdown-item"
+                                href="javascript: void(0);"
+                                onClick={() => handleEdit(room)}
+                              >
+                                Cho thuê
+                              </a>
+                            </li>
                           </ul>
                         </div>
                       </td>
@@ -291,7 +309,7 @@ export default function Rooms() {
                   onChange={handleInputChange}
                   style={inputStyle}
                 />
-                
+
               </div>
             )}
 
