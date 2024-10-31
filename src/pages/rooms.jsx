@@ -35,7 +35,7 @@ export default function Rooms() {
     setIsEditMode(false); 
     setIsModalOpen(true);
   };
-
+  
   const handleEdit = (room) => {
     setCurrentRoom(room);
     setIsEditMode(true);
