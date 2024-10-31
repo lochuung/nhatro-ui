@@ -192,6 +192,15 @@ const handleContractChange = (field, value) => {
     handleClose();
   };
 
+  const handleSetOwner = (index) => {
+    const updatedTenants = tenants.map((tenant, i) => ({
+      ...tenant,
+      isOwner: i === index
+    }));
+    setTenants(updatedTenants);
+  };
+  
+
   return (
     <div className="container-fluid">
       
@@ -479,6 +488,16 @@ const handleContractChange = (field, value) => {
                         <span style={{ maxWidth: "595px", marginBottom: "0", marginLeft: "10px" }}>
                           {tenant.address}
                         </span>.
+                        <div style={{ display: "flex", alignItems: "center", marginTop: "10px" }}>
+                        <label style={{ marginRight: "10px" }}>Chủ phòng:</label>
+                        <input
+                          type="radio"
+                          name="owner"
+                          checked={tenant.isOwner}
+                          onChange={() => handleSetOwner(index)}
+                          style={{ marginRight: "5px" }}
+                        />
+                      </div>
                       <br />
                     </div>
                   ))}
@@ -637,7 +656,7 @@ const handleContractChange = (field, value) => {
                   </table>
                   <br />
                   <br />
-                  <button onClick={() => window.print()} style={printButtonStyle}>
+                  <button style={printButtonStyle}>
                     In hợp đồng
                   </button>
 
@@ -821,7 +840,17 @@ const handleContractChange = (field, value) => {
                           onChange={(e) => handleTenantChange(index, "address", e.target.value)}
                           style={{ width: "595px", marginBottom: "5px", marginLeft: "10px" }} 
                         />.
-                    
+                    <div style={{ display: "flex", alignItems: "center", marginTop: "10px" }}>
+                      <label style={{ marginRight: "10px" }}>Chủ phòng:</label>
+                      <input
+                        type="radio"
+                        name="owner"
+                        checked={tenant.isOwner}
+                        onChange={() => handleSetOwner(index)}
+                        style={{ marginRight: "5px" }}
+                      />
+                    </div>
+
                     {tenants.length > 1 && (
                       <div style={{ position: "relative", marginBottom: "12px"}}>
                         <button onClick={() => handleRemoveTenant(index)} style={deleteTenant}>
