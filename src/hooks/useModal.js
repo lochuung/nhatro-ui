@@ -3,17 +3,17 @@ import {useState} from "react";
 const useModal = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
-    const [selectedRoom, setSelectedRoom] = useState(null);
+    const [selectedData, setSelectedData] = useState(null);
 
-    const openModal = (room = null) => {
-        setSelectedRoom(room);
-        setIsEditMode(!!room);
+    const openModal = (data = null) => {
+        setSelectedData(data);
+        setIsEditMode(!!data);
         setIsOpen(true);
     };
 
     const closeModal = () => setIsOpen(false);
 
-    return {isOpen, isEditMode, selectedRoom, openModal, closeModal};
+    return {isOpen, isEditMode, selectedData, openModal, closeModal};
 };
 
 export default useModal;

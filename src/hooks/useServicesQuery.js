@@ -1,19 +1,16 @@
 import {useQuery} from '@tanstack/react-query';
-import RoomServices from '../services/RoomServices';
+import ServiceServices from "../services/ServiceServices.js";
+import buildSearchData from "../utils/BuildQueryData.js";
 
-import {buildSearchData} from '../utils/BuildQueryData.js';
-
-// Custom hook for fetching rooms
-const useRoomsQuery = ({page = 0, size = 10, status = null, search = null, sort = null}) => {
+const useServicesQuery = ({page = 0, size = 10, search = null, sort = null}) => {
     return useQuery({
-        queryKey: ['rooms', {page, size, status, search, sort}],
+        queryKey: ['services', {page, size, status, search, sort}],
         queryFn: async () => {
-            const data = buildSearchData({page, size, status, search, sort});
-
-            const response = await RoomServices.getRooms(data);
+            const data = buildSearchData({page, size, search, sort});
+            const response = await ServiceServices.getServices(data);
             // Return structured data as expected by the consuming components
             return {
-                rooms: response.data.content,
+                services: response.data.content,
                 pagination: {
                     totalPages: response.data.totalPages,
                     totalElements: response.data.totalElements,
@@ -26,4 +23,4 @@ const useRoomsQuery = ({page = 0, size = 10, status = null, search = null, sort 
     });
 };
 
-export default useRoomsQuery;
+export default useServicesQuery;

@@ -107,7 +107,7 @@ const RoomTable = ({rooms, loading, openRoomForm, openDeleteConfirm, onSort, cur
                                                 if (direction) {
                                                     onSort({column: column.id, direction});
                                                 } else {
-                                                    onSort({column: null, direction: null});
+                                                    onSort(null);
                                                 }
                                             }
                                         }))}
