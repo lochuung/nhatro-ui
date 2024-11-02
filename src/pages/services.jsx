@@ -1,107 +1,47 @@
-import {useCallback, useMemo, useState} from "react";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useMemo, useState} from "react";
+import {useQueryClient} from "@tanstack/react-query";
 import {Spin} from "antd";
 import ServiceTable from "../components/services_fee/ServiceTable.jsx";
 import useServicesQuery from "../hooks/useServicesQuery.js";
 import useModal from "../hooks/useModal.js";
-import ServiceServices from "../services/ServiceServices.js";
 import SearchInput from "../components/SearchInput.jsx";
 import DeleteModal from "../components/DeleteModal.jsx";
 import ServiceFeeForm from "../components/services_fee/ServiceFeeForm.jsx";
+import PaginationButtons from "../components/PaginationButtons.jsx";
+import useTableFilters from "../hooks/useTableFilters.js";
+import useSaveOrUpdateMutation from "../hooks/useSaveOrUpdateMutation.js";
+import RoomServices from "../services/RoomServices.js";
+import useDeleteMutation from "../hooks/useDeleteMutation.js";
+import ServiceServices from "../services/ServiceServices.js";
 
 
 export default function Services() {
-    const [filters, setFilters] = useState({
+    const queryClient = useQueryClient();
+    const {filters, setFilters, handlePageChange, handleSearch, handleSort, handleFilterChange} = useTableFilters({
         page: 0,
-        size: 2,
+        size: 10,
+        status: null,
         search: '',
         sort: null,
     });
 
-    const queryClient = useQueryClient();
-
     // Destructure filters and pass them to the query
-    const { page, size, search, sort } = filters;
+    const {page, size, search, sort} = filters;
 
-    const { data, isLoading } = useServicesQuery({ page, size, search, sort });
+    const {data, isLoading} = useServicesQuery({page, size, search, sort});
     const services = data?.services || [];
-    const pagination = data?.pagination || { totalPages: 1, currentPage: 0, pageSize: 10 };
-    const { totalPages } = pagination;
+    const pagination = data?.pagination || {totalPages: 1, currentPage: 0, pageSize: 10};
+    const {totalPages} = pagination;
 
-    const [selectedServiceId, setSelectedServiceId] = useState(null);
     const deleteModal = useModal();
     const serviceFormModal = useModal();
 
-    // Handlers: Memoized to prevent unnecessary re-renders
-    const handlePageChange = useCallback((pageNumber) => {
-        setFilters((prev) => ({ ...prev, page: pageNumber }));
-    }, []);
-
-    const handleFilterChange = useCallback((newStatus) => {
-        setFilters((prev) => ({ ...prev, status: newStatus, page: 0 }));
-    }, []);
-
-    const handleSearch = useCallback((newSearchText) => {
-        setFilters((prev) => ({ ...prev, search: newSearchText, page: 0 }));
-    }, []);
-
-    const handleSort = useCallback(({ column, direction }) => {
-        setFilters((prev) => ({
-            ...prev,
-            sort: direction ? { column, direction } : null,
-        }));
-    }, []);
-
-    const saveOrUpdateMutation = useMutation({
-        mutationFn: (values) => {
-            if (serviceFormModal.isEditMode) {
-                return ServiceServices.saveOrUpdateService(serviceFormModal.selectedData.id, values);
-            } else {
-                return ServiceServices.saveOrUpdateService(null, values);
-            }
-        },
-        onSuccess: () => {
-            serviceFormModal.closeModal();
-            queryClient.invalidateQueries(['services']);
-        },
-    });
+    const saveOrUpdateMutation = useSaveOrUpdateMutation(queryClient, serviceFormModal, ServiceServices.saveOrUpdateService);
+    const deleteServiceMutation = useDeleteMutation(queryClient, deleteModal, ServiceServices.deleteService, filters, setFilters, services);
 
     const handleServiceFormSubmit = (values) => {
         saveOrUpdateMutation.mutate(values);
     };
-
-    const deleteServiceMutation = useMutation({
-        mutationFn: (serviceId) => ServiceServices.deleteService(serviceId),
-        onSuccess: () => {
-            deleteModal.closeModal();
-            queryClient.invalidateQueries(['services']);
-            // Adjust pagination if the last item of the page was deleted
-            if (services.length === 1 && page > 0) {
-                setFilters((prev) => ({ ...prev, page: prev.page - 1 }));
-            }
-        },
-    });
-
-    // Open delete confirmation modal
-    const openDeleteConfirm = (serviceId) => {
-        setSelectedServiceId(serviceId);
-        deleteModal.openModal();
-    };
-
-    const handleDeleteConfirm = () => {
-        deleteServiceMutation.mutate(selectedServiceId);
-    };
-
-    // Memoize pagination buttons to avoid unnecessary re-renders
-    const paginationButtons = useMemo(() => (
-        Array.from({ length: totalPages }, (_, index) => (
-            <li key={index} className={`page-item ${page === index ? 'active' : ''}`}>
-                <button className="page-link" onClick={() => handlePageChange(index)}>
-                    {index + 1}
-                </button>
-            </li>
-        ))
-    ), [totalPages, page, handlePageChange]);
     return (
         <div className="container-fluid">
             <div className="d-flex align-items-baseline justify-content-between">
@@ -145,14 +85,18 @@ export default function Services() {
                                 <ServiceTable
                                     services={services}
                                     openServiceFeeForm={serviceFormModal.openModal}
-                                    openDeleteConfirm={openDeleteConfirm}
+                                    openDeleteConfirm={deleteModal.openModal}
                                 />
                             )}
                         </div>
 
                         <div className="card-footer">
                             <ul className="pagination justify-content-end list-pagination mb-0">
-                                {paginationButtons}
+                                <PaginationButtons
+                                    currentPage={page}
+                                    totalPages={totalPages}
+                                    onPageChange={handlePageChange}
+                                />
                             </ul>
                         </div>
                     </div>
@@ -170,7 +114,7 @@ export default function Services() {
             {/* Delete Confirmation Modal */}
             <DeleteModal
                 visible={deleteModal.isOpen}
-                onConfirm={handleDeleteConfirm}
+                onConfirm={() => deleteServiceMutation.mutate(deleteModal.selectedData)}
                 onCancel={deleteModal.closeModal}
             />
         </div>

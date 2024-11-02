@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React from 'react';
 import RoomServices from '../services/RoomServices';
 import {Spin} from 'antd';
 import RoomForm from "../components/room/RoomForm.jsx";
@@ -84,9 +84,8 @@ export default function Rooms() {
                             ) : (
                                 <RoomsTable
                                     rooms={rooms}
-                                    loading={isLoading}
                                     openRoomForm={roomFormModal.openModal}
-                                    openDeleteConfirm={(id) => deleteModal.openModal(id)}
+                                    openDeleteConfirm={deleteModal.openModal}
                                     onSort={handleSort}
                                     currentSort={sort}
                                 />
