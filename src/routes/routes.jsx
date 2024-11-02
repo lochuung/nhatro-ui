@@ -6,8 +6,7 @@ import Login from '../pages/Auth/Login.jsx';
 // Lazy-loaded components
 const Rooms = lazy(() => import('../pages/rooms.jsx'));
 const Contract = lazy(() => import('../pages/contract.jsx'));
-const RoomUpsert = lazy(() => import('../pages/room-upsert.jsx'));
-
+const Service = lazy(() => import('../pages/services.jsx'));
 const routes = [
     {
         element: (
@@ -18,10 +17,9 @@ const routes = [
         children: [
             {path: '/', element: <Rooms/>},
             {path: '/rooms', element: <Rooms/>},
-            {path: '/rooms/:id/edit', element: <RoomUpsert isAdd={false}/>},
             {path: '/contracts', element: <Contract/>},
             {path: '/invoices', element: <></>},
-            {path: '/services', element: <></>},
+            {path: '/services', element: <Service/>},
         ],
     },
     {

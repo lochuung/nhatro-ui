@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
-import { FaMoon, FaSun } from 'react-icons/fa';
-import { ThemeContext } from '../../context/ThemeContext.jsx';
-import { Button, Tooltip } from 'antd';
+import React, {useContext} from 'react';
+import {FaMoon, FaSun} from 'react-icons/fa';
+import {ThemeContext} from '../../context/ThemeContext.jsx';
+import {Button, Tooltip} from 'antd';
 
 const themes = [
     { value: 'light', label: 'Light mode', icon: FaSun },
