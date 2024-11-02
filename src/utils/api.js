@@ -26,7 +26,7 @@ api.interceptors.response.use(
             localStorage.removeItem("accessToken");
             return redirect("/login");
         } else {
-            toast.error(error.response.data.message);
+            toast.error(error.response.data.description);
         }
         return Promise.reject(error);
     }

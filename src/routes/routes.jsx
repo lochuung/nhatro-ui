@@ -7,6 +7,7 @@ import Login from '../pages/Auth/Login.jsx';
 const Rooms = lazy(() => import('../pages/rooms.jsx'));
 const Contract = lazy(() => import('../pages/contract.jsx'));
 const Service = lazy(() => import('../pages/services.jsx'));
+const Setting = lazy(() => import('../pages/settings.jsx'));
 const routes = [
     {
         element: (
@@ -20,6 +21,7 @@ const routes = [
             {path: '/contracts', element: <Contract/>},
             {path: '/invoices', element: <></>},
             {path: '/services', element: <Service/>},
+            {path: '/settings', element: <Setting></Setting>},
         ],
     },
     {
