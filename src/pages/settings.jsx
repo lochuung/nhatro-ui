@@ -1,7 +1,6 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import { Spin, Button, Input, Form } from "antd";
-import RoomsTable from "../components/room/RoomTable.jsx";
-import React, { useState } from "react";
+import {Button, Form, Input, Spin} from "antd";
+import React, {useState} from "react";
 import useSettingQuery from "../hooks/useSettingQuery.js";
 import SettingServices from "../services/SettingServices.js";
 
@@ -10,6 +9,8 @@ const Settings = () => {
     const { data, isLoading, isError } = useSettingQuery();
     const [isAdding, setIsAdding] = useState(false);
     const [form] = Form.useForm();
+    const [isEditing, setIsEditing] = useState(false);
+    const [selectedSetting, setSelectedSetting] = useState(null);
 
     const settings = data?.settings || [];
 
@@ -34,6 +35,12 @@ const Settings = () => {
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const handleRowClick = (setting) => {
+        form.setFieldsValue({ key: setting.key, value: setting.value });
+        setSelectedSetting(setting);
+        setIsEditing(true);
     };
 
     const title = "Cài đặt";
@@ -84,7 +91,8 @@ const Settings = () => {
                                     </thead>
                                     <tbody>
                                     {settingsArray.map((setting) => (
-                                        <tr key={setting.key}>
+                                        <tr key={setting.id} onClick={() => handleRowClick(setting)}
+                                            style={{cursor: "pointer"}}>
                                             <td>{setting.key}</td>
                                             <td>{setting.value}</td>
                                         </tr>
