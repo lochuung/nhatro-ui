@@ -1,6 +1,7 @@
 import {NavLink} from "react-router-dom";
 import {FiFileText, FiHome} from "react-icons/fi"; // Feather Icons
-import {MdReceipt, MdRoomService} from "react-icons/md"; // Material Design Icons
+import {MdReceipt, MdRoomService, MdSettings} from "react-icons/md";
+import {CiSettings} from "react-icons/ci"; // Material Design Icons
 
 export default function Navbar() {
     const navItems = [
@@ -23,6 +24,11 @@ export default function Navbar() {
             to: "/services",
             label: "Dịch Vụ",
             icon: <MdRoomService className="nav-link-icon" size={18}/>,
+        },
+        {
+            to: "/settings",
+            label: "Cài Đặt",
+            icon: <MdSettings className="nav-link-icon" size={18}/>,
         },
     ];
 
