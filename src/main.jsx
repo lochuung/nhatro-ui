@@ -1,88 +1,47 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
-import { createBrowserRouter } from "react-router-dom";
-import Rooms from "./pages/rooms.jsx";
-import Login from "./pages/Auth/Login.jsx";
-import { RouterProvider } from "react-router";
-import { Provider } from "react-redux";
-import { ToastContainer } from "react-toastify";
-import store from "./redux/store.js";
-import { ThemeScript } from "./components/ThemeScript.jsx";
+import {StrictMode, Suspense} from 'react'
+import {createRoot} from 'react-dom/client'
+import {createBrowserRouter} from "react-router-dom";
+import {RouterProvider} from "react-router";
+import {Bounce, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Loading from "./components/Loading/Loading.jsx";
-import Contract from './pages/contract.jsx';
-import RoomUpsert, { loader as roomLoader } from './pages/room-upsert.jsx';
-import PrivateRoute from "./components/PrivateRoute.jsx";
-import Invoice from './pages/Invoice.jsx';
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import routes from './routes/routes.jsx';
+import ErrorBoundary from "./routes/ErrorBoundary.jsx";
+import {ThemeContextProvider} from "./context/ThemeContext.jsx";
 
-
-const router = createBrowserRouter([
-    {
-        element:
-            // <PrivateRoute>
-            <ThemeScript>
-                <App />
-            </ThemeScript>
-        // </PrivateRoute>
-        ,
-        children: [
-            {
-                path: "/",
-                element: <Rooms />,
-            },
-            {
-                path: "/rooms",
-                element: <Rooms />,
-            },
-            {
-                path: "/rooms/:id/edit",
-                element: <RoomUpsert isAdd={false} />,
-                loader: roomLoader,
-            }
-            ,
-            {
-                path: "/contracts",
-                element: <Contract />,
-            },
-            {
-                path: "/invoices",
-                element: <Invoice />,
-            },
-            {
-                path: "/services",
-                element: <></>,
-            },
-
-        ]
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+            refetchOnMount: false,
+        },
     },
-    {
-        path: '/login',
-        element:
-            <ThemeScript>
-                <Login />
-            </ThemeScript>,
-    }
-]);
+});
 
 createRoot(document.getElementById('root')).render(
-    // <StrictMode>
-    <Provider store={store}>
-        <ToastContainer
-            position="top-center"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            transition:Bounce
-        />
-        <RouterProvider router={router} fallbackElement={<Loading />}>
-        </RouterProvider>
-    </Provider>
-    // </StrictMode>,
+    <StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                transition={Bounce}
+            />
+            <Suspense fallback={<Loading/>}>
+                <ErrorBoundary>
+                    <ThemeContextProvider>
+                        <RouterProvider router={createBrowserRouter(routes)}/>
+                    </ThemeContextProvider>
+                </ErrorBoundary>
+            </Suspense>
+        </QueryClientProvider>
+    </StrictMode>,
 )
