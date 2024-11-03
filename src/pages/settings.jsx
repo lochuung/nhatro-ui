@@ -3,6 +3,8 @@ import {Button, Form, Input, Spin} from "antd";
 import React, {useState} from "react";
 import useSettingQuery from "../hooks/useSettingQuery.js";
 import SettingServices from "../services/SettingServices.js";
+import PageHeader from "../components/PageHeader.jsx";
+import TableControls from "../components/TableControls.jsx";
 
 const Settings = () => {
     const queryClient = useQueryClient();
@@ -49,25 +51,16 @@ const Settings = () => {
 
     return (
         <div className="container-fluid">
-            <div className="d-flex align-items-baseline justify-content-between">
-                <h1 className="h2">{title}</h1>
-                <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb">
-                        <li className="breadcrumb-item">
-                            <a href="#">Trang chủ</a>
-                        </li>
-                        <li className="breadcrumb-item active" aria-current="page">
-                            {title}
-                        </li>
-                    </ol>
-                </nav>
-            </div>
+            <PageHeader
+                title="Danh sách cài đặt"
+            />
+
             <div className="row">
-                <div className="col">
-                    <div className="card border-0">
-                        <div className="card-header border-0">
-                            <h2 className="h4">Cài đặt</h2>
-                        </div>
+                <div className="col d-flex">
+                    <div className="card border-0 flex-fill w-100">
+                        <TableControls
+                            title="Cài đặt"
+                        />
                         <div className="card-body">
                             {isLoading ? (
                                 <div className="text-center my-4">

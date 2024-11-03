@@ -11,6 +11,8 @@ import useTableFilters from "../hooks/useTableFilters.js";
 import useSaveOrUpdateMutation from "../hooks/useSaveOrUpdateMutation.js";
 import useDeleteMutation from "../hooks/useDeleteMutation.js";
 import ServiceServices from "../services/ServiceServices.js";
+import PageHeader from "../components/PageHeader.jsx";
+import TableControls from "../components/TableControls.jsx";
 
 
 export default function Services() {
@@ -42,33 +44,18 @@ export default function Services() {
     };
     return (
         <div className="container-fluid">
-            <div className="d-flex align-items-baseline justify-content-between">
-                <h1 className="h2">Danh sách dịch vụ</h1>
-                <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb">
-                        <li className="breadcrumb-item">
-                            <a href="#">Trang chủ</a>
-                        </li>
-                        <li className="breadcrumb-item active" aria-current="page">
-                            Danh sách dịch vụ
-                        </li>
-                    </ol>
-                </nav>
-            </div>
+            <PageHeader
+                title="Danh sách dịch vụ"
+            />
 
             <div className="row">
                 <div className="col d-flex">
                     <div className="card border-0 flex-fill w-100" id="keysTable">
-                        <div className="card-header border-0">
-                            <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-end">
-                                <h2 className="card-header-title h4 text-uppercase">Danh sách dịch vụ</h2>
-                                <SearchInput onSearch={handleSearch}/>
-                                <button type="button" className="btn btn-primary ms-md-4"
-                                        onClick={() => serviceFormModal.openModal()}>
-                                    Thêm mới
-                                </button>
-                            </div>
-                        </div>
+                        <TableControls
+                            title="Danh sách dịch vụ"
+                            onSearch={handleSearch}
+                            onAdd={() => serviceFormModal.openModal()}
+                        />
 
                         <div className="table-responsive">
                             {isLoading ? (
