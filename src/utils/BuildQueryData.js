@@ -1,4 +1,4 @@
-export const buildSearchData = ({page, size, status, search, sort}) => {
+export const buildSearchData = ({page, size, status, filters, search, sort, searchProperties = ['name', 'code', 'description']}) => {
     const data = {
         page,
         size,
@@ -6,12 +6,15 @@ export const buildSearchData = ({page, size, status, search, sort}) => {
         ...(sort && {sorts: [{key: sort.column, direction: sort.direction}]})
     };
 
+    if (filters) {
+        data.filters.push(...filters);
+    }
+
     if (status) {
         data.filters.push({key: 'status', operator: 'EQUAL', fieldType: 'STRING', value: status});
     }
 
     if (search) {
-        const searchProperties = ['name', 'code', 'description'];
         data.filters.push(
             ...searchProperties.map(property => ({
                 key: property,

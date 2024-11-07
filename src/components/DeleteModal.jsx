@@ -10,7 +10,7 @@ const DeleteModal = ({visible, onConfirm, onCancel}) => (
         cancelText="Hủy"
         okButtonProps={{danger: true}}
     >
-        <p>Bạn có chắc chắn muốn xóa phòng này?</p>
+        <p>Bạn có chắc chắn muốn xóa?</p>
     </Modal>
 );
 

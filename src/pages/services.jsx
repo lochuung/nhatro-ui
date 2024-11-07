@@ -52,7 +52,7 @@ export default function Services() {
                 <div className="col d-flex">
                     <div className="card border-0 flex-fill w-100" id="keysTable">
                         <TableControls
-                            title="Danh sách dịch vụ"
+                            title="Dịch vụ"
                             onSearch={handleSearch}
                             onAdd={() => serviceFormModal.openModal()}
                         />

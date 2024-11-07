@@ -60,7 +60,7 @@ export default function Rooms() {
                                 className="form-control mw-md-300px ms-md-auto mt-5
                                 mt-md-0 mb-3 mb-md-0"
                                 value={status || ''}
-                                onChange={(e) => handleFilterChange(e.target.value)}
+                                onChange={(e) => handleFilterChange({fieldName: 'status', newValue: e.target.value})}
                             >
                                 {statuses.map((status) => (
                                     <option key={status.key + status.value} value={status.value}>{status.label}</option>
