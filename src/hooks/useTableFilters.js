@@ -15,8 +15,8 @@ const useTableFilters = (initialFilters = {page: 0, size: 10, search: '', sort: 
         setFilters((prev) => ({...prev, sort, page: 0}));
     }, []);
 
-    const handleFilterChange = useCallback((newStatus) => {
-        setFilters((prev) => ({...prev, status: newStatus, page: 0}));
+    const handleFilterChange = useCallback(({fieldName, newValue}) => {
+        setFilters((prev) => ({...prev, [fieldName]: newValue, page: 0}));
     }, []);
 
     return {filters, setFilters, handlePageChange, handleSearch, handleSort, handleFilterChange};

@@ -6,6 +6,10 @@ export default class RoomServices {
         return api.post(`${ApiUrl.crudRoom}/search`, data);
     };
 
+    static getAllRooms = () => {
+        return api.get(`${ApiUrl.crudRoom}`);
+    };
+
     static getRoom = (id) => {
         return api.get(`${ApiUrl.crudRoom}/${id}`);
     };

@@ -12,12 +12,13 @@ import useTableFilters from "../hooks/useTableFilters.js";
 import useSaveOrUpdateMutation from "../hooks/useSaveOrUpdateMutation.js";
 import useDeleteMutation from "../hooks/useDeleteMutation.js";
 import PaginationButtons from "../components/PaginationButtons.jsx";
+import PageHeader from "../components/PageHeader.jsx";
 
 export default function Rooms() {
     const queryClient = useQueryClient();
     const {filters, setFilters, handlePageChange, handleSearch, handleSort, handleFilterChange} = useTableFilters({
         page: 0,
-        size: 10,
+        size: 4,
         status: null,
         search: '',
         sort: null,
@@ -35,42 +36,37 @@ export default function Rooms() {
     const saveOrUpdateMutation = useSaveOrUpdateMutation(queryClient, roomFormModal, RoomServices.saveOrUpdateRoom);
     const deleteRoomMutation = useDeleteMutation(queryClient, deleteModal, RoomServices.deleteRoom, filters, setFilters, rooms);
 
+    const statuses = [
+        {label: 'Tất cả', value: ''},
+        {label: 'Đã cho thuê', value: 'RENTED'},
+        {label: 'Còn trống', value: 'AVAILABLE'},
+    ]
+
     return (
         <div className="container-fluid">
-            <div className="d-flex align-items-baseline justify-content-between">
-                <h1 className="h2">Danh sách phòng</h1>
-                <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb">
-                        <li className="breadcrumb-item">
-                            <a href="#">Trang chủ</a>
-                        </li>
-                        <li className="breadcrumb-item active" aria-current="page">
-                            Danh sách phòng
-                        </li>
-                    </ol>
-                </nav>
-            </div>
+            <PageHeader
+                title="Danh sách phòng"
+            />
 
             <div className="row">
                 <div className="col d-flex">
                     <div className="card border-0 flex-fill w-100" id="keysTable">
-                        <div className="card-header border-0">
-                            <TableControls
-                                title="Danh sách phòng"
-                                onSearch={handleSearch}
-                                onAdd={() => roomFormModal.openModal()}
+                        <TableControls
+                            title="Danh sách phòng"
+                            onSearch={handleSearch}
+                            onAdd={() => roomFormModal.openModal()}
+                        >
+                            <select
+                                className="form-control mw-md-300px ms-md-auto mt-5
+                                mt-md-0 mb-3 mb-md-0"
+                                value={status || ''}
+                                onChange={(e) => handleFilterChange({fieldName: 'status', newValue: e.target.value})}
                             >
-                                <select
-                                    className="form-control mw-md-300px ms-md-auto mt-5 mt-md-0 mb-3 mb-md-0"
-                                    value={status || ''}
-                                    onChange={(e) => handleFilterChange(e.target.value)}
-                                >
-                                    <option value="">Tất cả</option>
-                                    <option value="RENTED">Đã cho thuê</option>
-                                    <option value="AVAILABLE">Còn trống</option>
-                                </select>
-                            </TableControls>
-                        </div>
+                                {statuses.map((status) => (
+                                    <option key={status.key + status.value} value={status.value}>{status.label}</option>
+                                ))}
+                            </select>
+                        </TableControls>
 
                         <div className="table-responsive">
                             {isLoading ? (

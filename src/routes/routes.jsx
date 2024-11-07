@@ -8,6 +8,8 @@ const Rooms = lazy(() => import('../pages/rooms.jsx'));
 const Contract = lazy(() => import('../pages/contract.jsx'));
 const Service = lazy(() => import('../pages/services.jsx'));
 const Setting = lazy(() => import('../pages/settings.jsx'));
+const Invoice = lazy(() => import('../pages/invoice.jsx'));
+
 const routes = [
     {
         element: (
@@ -19,7 +21,7 @@ const routes = [
             {path: '/', element: <Rooms/>},
             {path: '/rooms', element: <Rooms/>},
             {path: '/contracts', element: <Contract/>},
-            {path: '/invoices', element: <></>},
+            {path: '/invoices', element: <Invoice/>},
             {path: '/services', element: <Service/>},
             {path: '/settings', element: <Setting></Setting>},
         ],

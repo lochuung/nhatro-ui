@@ -5,4 +5,5 @@ export default class ApiUrl {
     static crudContract = `${ApiUrl.baseUrl}/api/v1/contracts`;
     static crudOtherFee = `${ApiUrl.baseUrl}/api/v1/service-fees`;
     static crudSetting = `${ApiUrl.baseUrl}/api/v1/settings`;
+    static crudInvoice = `${ApiUrl.baseUrl}/api/v1/invoices`;
 }
