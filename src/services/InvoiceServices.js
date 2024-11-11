@@ -6,22 +6,30 @@ export default class InvoiceServices {
         return api.post(`${ApiUrl.crudInvoice}/search`, data);
     };
 
-    static getInvoice = (id) => {
+    static getPrintUrl = (id) => {
+        return `${ApiUrl.crudInvoice}/print/${id}`;
+    }
+
+    static
+    getInvoice = (id) => {
         return api.get(`${ApiUrl.crudInvoice}/${id}`);
     };
 
-    static createInvoice = (data) => {
+    static
+    createInvoice = (data) => {
         return api.post(ApiUrl.crudInvoice, {...data, branchId: 1});
     };
 
-    static saveOrUpdateInvoice = (id, data) => {
+    static
+    saveOrUpdateInvoice = (id, data) => {
         if (!id) {
             return InvoiceServices.createInvoice(data);
         }
         return api.put(`${ApiUrl.crudInvoice}`, {...data, id, branchId: 1});
     };
 
-    static deleteInvoice = (id) => {
+    static
+    deleteInvoice = (id) => {
         return api.delete(`${ApiUrl.crudInvoice}/${id}`);
     };
 }

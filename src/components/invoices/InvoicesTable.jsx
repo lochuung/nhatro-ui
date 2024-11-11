@@ -1,9 +1,21 @@
 import React, {useMemo} from "react";
 import SortableTable from "../SortableTable.jsx";
 import {Dropdown, Menu, Button} from 'antd';
-import {DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined} from '@ant-design/icons';
+import {DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined, PrinterOutlined} from '@ant-design/icons';
+import {FcPrint} from "react-icons/fc";
+import {AiOutlinePrinter} from "react-icons/ai";
 
-const InvoicesTable = ({invoices, isLoading, openForm, openDeleteConfirm, onDelete, onSort, currentSort}) => {
+const InvoicesTable = ({
+                           invoices,
+                           isLoading,
+                           onView,
+                           onPrint,
+                           openForm,
+                           openDeleteConfirm,
+                           onDelete,
+                           onSort,
+                           currentSort
+                       }) => {
     const columns = useMemo(
         () => [
             {
@@ -51,6 +63,21 @@ const InvoicesTable = ({invoices, isLoading, openForm, openDeleteConfirm, onDele
                 Cell: ({row}) => {
                     const menu = (
                         <Menu>
+                            <Menu.Item
+                                key="view-1"
+                                icon={<EyeOutlined/>}
+                                onClick={() => onView(row.original)}
+                            >
+                                Xem
+                            </Menu.Item>
+                            <Menu.Item
+                                key="print-1"
+                                icon={<AiOutlinePrinter/>}
+                                onClick={() => onPrint(row.original.id)}
+                            >
+                                In
+                            </Menu.Item>
+                            <Menu.Divider/>
                             <Menu.Item
                                 key="1"
                                 icon={<EditOutlined style={{color: '#1890ff'}}/>}

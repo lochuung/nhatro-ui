@@ -11,6 +11,14 @@ export default class ContractServices {
         return api.get(`${ApiUrl.crudContract}/${id}`);
     };
 
+    static getPrintUrl = (id) => {
+        return `${ApiUrl.crudContract}/print/${id}`;
+    };
+
+    static getContractsAvailable = () => {
+        return api.get(`${ApiUrl.crudContract}/all-available`);
+    }
+
     static createContract = (data) => {
         return api.post(ApiUrl.crudContract, {...data, branchId: 1});
     };

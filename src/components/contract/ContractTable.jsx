@@ -3,14 +3,19 @@ import SortableTable from "../SortableTable.jsx";
 import {Button, Dropdown, Menu} from "antd";
 import {DeleteOutlined, EditOutlined, FileTextOutlined, MoreOutlined} from "@ant-design/icons";
 
-const RoomTable = ({rooms, openRoomForm, onContractsView, openDeleteConfirm, onSort, currentSort}) => {
+const ContractTable = ({datas, openForm, onInvoicesView, onPrint, openDelete, onSort, currentSort}) => {
     const columns = useMemo(() => [
-        {Header: "Tên phòng", accessor: "name"},
-        {Header: "Mã phòng", accessor: "code"},
+        {Header: "Tên phòng", accessor: "room.name"},
+        {Header: "Mã phòng", accessor: "room.code"},
         {
             Header: "Giá",
             accessor: "price",
             Cell: ({value}) => new Intl.NumberFormat("vi-VN", {style: "currency", currency: "VND"}).format(value),
+        },
+        {
+            Header: "Chủ phòng",
+            accessor: "owner.name",
+            Cell: ({value}) => value || "Chưa có",
         },
         {
             Header: "Trạng thái",
@@ -18,7 +23,7 @@ const RoomTable = ({rooms, openRoomForm, onContractsView, openDeleteConfirm, onS
             Cell: ({value}) => (
                 <>
                     <span className={`legend-circle ${value === "RENTED" ? "bg-danger" : "bg-success"}`}/>
-                    {value === "RENTED" ? "Đã cho thuê" : "Trống"}
+                    {value === "OPENING" ? "Đang mở" : "Đã đống"}
                 </>
             ),
         },
@@ -31,24 +36,31 @@ const RoomTable = ({rooms, openRoomForm, onContractsView, openDeleteConfirm, onS
                 const menu = (
                     <Menu>
                         <Menu.Item
-                            key={"contract" + row.original.id}
+                            key={"invoice" + row.original.id}
                             icon={<FileTextOutlined style={{color: '#1890ff'}}/>}
-                            onClick={() => onContractsView(row.original.code)}
-                            >
-                            Xem hợp đồng
+                            onClick={() => onInvoicesView(row.original.id)}
+                        >
+                            Xem hóa đơn
                         </Menu.Item>
                         <Menu.Divider />
                         <Menu.Item
-                            key="1"
+                            key={"print" + row.original.id}
+                            icon={<FileTextOutlined style={{color: '#1890ff'}}/>}
+                            onClick={() => onPrint(row.original.id)}
+                        >
+                            In hợp đồng
+                        </Menu.Item>
+                        <Menu.Item
+                            key={"edit" + row.original.id}
                             icon={<EditOutlined style={{color: '#1890ff'}}/>}
-                            onClick={() => openRoomForm(row.original)}
+                            onClick={() => openForm(row.original)}
                         >
                             Chỉnh sửa
                         </Menu.Item>
                         <Menu.Item
-                            key="2"
+                            key={"delete" + row.original.id}
                             icon={<DeleteOutlined style={{color: '#ff4d4f'}}/>}
-                            onClick={() => openDeleteConfirm(row.original.id)}
+                            onClick={() => openDelete(row.original.id)}
                         >
                             Xóa
                         </Menu.Item>
@@ -68,7 +80,7 @@ const RoomTable = ({rooms, openRoomForm, onContractsView, openDeleteConfirm, onS
         },
     ], []);
 
-    const data = useMemo(() => rooms, [rooms]);
+    const data = useMemo(() => datas, [datas]);
 
     return (
         <SortableTable
@@ -80,4 +92,4 @@ const RoomTable = ({rooms, openRoomForm, onContractsView, openDeleteConfirm, onS
     );
 };
 
-export default RoomTable;
+export default ContractTable;
