@@ -3,14 +3,15 @@ import InvoiceServices from '../services/InvoiceServices';
 
 import {buildSearchData} from '../utils/BuildQueryData.js';
 
-const useInvoicesQuery = ({page = 0, size = 10, room = null, month = null, paymentStatus = null,
+const useInvoicesQuery = ({page = 0, contractId = null, size = 10, room = null, month = null, paymentStatus = null,
                               type = null, search, sort}) => {
     return useQuery({
-        queryKey: ['invoices', {page, size, room, month, paymentStatus, type, search, sort}],
+        queryKey: ['invoices', {page, size, room, month, paymentStatus, type, search, sort, contractId}],
         queryFn: async () => {
             const data = buildSearchData({page, size, search, sort,
             searchProperties: null});
 
+            data['contractId'] = contractId;
             data['roomId'] = room;
             data['month'] = month;
             data['isPaid'] = paymentStatus === 'paid' ? true : paymentStatus === 'unpaid' ? false : null;

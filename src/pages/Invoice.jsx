@@ -25,7 +25,9 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import "dayjs/locale/vi";
 import RoomForm from "../components/room/RoomForm.jsx";
-import InvoiceForm from "../components/invoices/InvoiceForm.jsx";  // Import tiếng Việt nếu cần
+import InvoiceForm from "../components/invoices/InvoiceForm.jsx";
+import {toast} from "react-toastify";
+import {useLocation} from "react-router";  // Import tiếng Việt nếu cần
 dayjs.extend(customParseFormat);
 dayjs.locale("vi");
 
@@ -77,16 +79,27 @@ const Invoice = (props) => {
         room: '',
         month: dayjs().format("MM/YYYY"),
         paymentStatus: '',
+        contractId: '',
         type: '',
     });
 
+    const location = useLocation();
+
+    useEffect(() => {
+        const contractId = new URLSearchParams(location.search).get('contractId');
+        if (contractId) {
+            setFilters({...filters, contractId});
+        }
+    }, [location.search]);
+
     // Destructure filters and pass them to the query
-    const {page, size, room, month, paymentStatus, type, search, sort} = filters;
+    const {page, size, room, month, paymentStatus, contractId, type, search, sort} = filters;
 
     const {data, isLoading} =
         useInvoicesQuery({
             page, size, room, type,
-            month, paymentStatus, search, sort
+            month, paymentStatus, search, sort,
+            contractId
         });
     const invoices = data?.invoices || [];
     const pagination = data?.pagination || {totalPages: 1, currentPage: 0, pageSize: 10};
@@ -105,6 +118,12 @@ const Invoice = (props) => {
             console.error("Error fetching rooms:", error);
         });
     }, []);
+
+    const onPrint = (id) => {
+        // open print dialog
+        window.open(InvoiceServices.getPrintUrl(id), "_blank");
+    };
+
 
     return (
         <div className="container-fluid">
@@ -198,6 +217,7 @@ const Invoice = (props) => {
                                     invoices={invoices}
                                     openForm={formModal.openModal}
                                     openDeleteConfirm={deleteModal.openModal}
+                                    onPrint={onPrint}
                                 />
                             )}
                         </div>
@@ -221,7 +241,7 @@ const Invoice = (props) => {
             <InvoiceForm
                 visible={formModal.isOpen}
                 isEditMode={formModal.isEditMode}
-                currentRoom={formModal.selectedData}
+                currentInvoice={formModal.selectedData}
                 onSubmit={(values) => saveOrUpdateMutation.mutate(values)}
                 onCancel={formModal.closeModal}
             />

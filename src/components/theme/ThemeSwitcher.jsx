@@ -30,7 +30,8 @@ const ThemeSwitcher = () => {
                     backgroundColor: theme === 'dark' ? '#333' : '#fff',
                     borderColor: theme === 'dark' ? '#666' : '#ddd',
                     color: theme === 'dark' ? '#f5f5f5' : '#333',
-                    boxShadow: theme === 'dark' ? '0 0 10px rgba(0, 0, 0, 0.3)' : '0 0 10px rgba(255, 255, 255, 0.3)'
+                    boxShadow: theme === 'dark' ? '0 0 10px rgba(0, 0, 0, 0.3)' : '0 0 10px rgba(255, 255, 255, 0.3)',
+                    width: '40px', height: '40px', fontSize: '1.25rem'
                 }}
             />
         </Tooltip>

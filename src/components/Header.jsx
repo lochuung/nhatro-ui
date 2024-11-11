@@ -5,6 +5,8 @@ import {toast} from 'react-toastify';
 import Dropdown from 'react-bootstrap/Dropdown';
 import ThemeSwitcher from './theme/ThemeSwitcher.jsx';
 import AuthServices from '../services/AuthServices.js';
+import {FaArrowLeft} from "react-icons/fa";
+import {Button} from "antd";
 
 export default function Header() {
     const navigate = useNavigate();
@@ -25,6 +27,13 @@ export default function Header() {
         <>
             {/* HEADER */}
             <header className="container-fluid d-flex py-6 mb-4">
+                <Button
+                    onClick={() => navigate(-1)}
+                    shape="circle"
+                    style={{ marginRight: '0.5rem', width: '40px', height: '40px', fontSize: '1.25rem' }}
+                    icon={
+                        <FaArrowLeft size={20}/>}
+                />
                 <ThemeSwitcher/>
 
                 {/* Top buttons */}

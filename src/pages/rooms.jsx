@@ -13,6 +13,7 @@ import useSaveOrUpdateMutation from "../hooks/useSaveOrUpdateMutation.js";
 import useDeleteMutation from "../hooks/useDeleteMutation.js";
 import PaginationButtons from "../components/PaginationButtons.jsx";
 import PageHeader from "../components/PageHeader.jsx";
+import {useNavigate} from "react-router";
 
 export default function Rooms() {
     const queryClient = useQueryClient();
@@ -34,13 +35,19 @@ export default function Rooms() {
     const roomFormModal = useModal();
 
     const saveOrUpdateMutation = useSaveOrUpdateMutation(queryClient, roomFormModal, RoomServices.saveOrUpdateRoom);
-    const deleteRoomMutation = useDeleteMutation(queryClient, deleteModal, RoomServices.deleteRoom, filters, setFilters, rooms);
+    const deleteMutation = useDeleteMutation(queryClient, deleteModal, RoomServices.deleteRoom, filters, setFilters, rooms);
 
     const statuses = [
         {label: 'Tất cả', value: ''},
         {label: 'Đã cho thuê', value: 'RENTED'},
         {label: 'Còn trống', value: 'AVAILABLE'},
     ]
+
+    const navigate = useNavigate();
+
+    const onContractsView = (code) => {
+        navigate(`/contracts?roomCode=${code}`);
+    }
 
     return (
         <div className="container-fluid">
@@ -52,7 +59,7 @@ export default function Rooms() {
                 <div className="col d-flex">
                     <div className="card border-0 flex-fill w-100" id="keysTable">
                         <TableControls
-                            title="Danh sách phòng"
+                            title="Phòng"
                             onSearch={handleSearch}
                             onAdd={() => roomFormModal.openModal()}
                         >
@@ -84,6 +91,7 @@ export default function Rooms() {
                                     openDeleteConfirm={deleteModal.openModal}
                                     onSort={handleSort}
                                     currentSort={sort}
+                                    onContractsView={onContractsView}
                                 />
                             )}
                         </div>
@@ -109,7 +117,7 @@ export default function Rooms() {
 
             <DeleteModal
                 visible={deleteModal.isOpen}
-                onConfirm={() => deleteRoomMutation.mutate(deleteModal.selectedData)}
+                onConfirm={() => deleteMutation.mutate(deleteModal.selectedData)}
                 onCancel={deleteModal.closeModal}
             />
         </div>
