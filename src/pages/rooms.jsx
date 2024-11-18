@@ -1,6 +1,6 @@
 import React from 'react';
 import RoomServices from '../services/RoomServices';
-import {Spin} from 'antd';
+import {Button, Select, Spin} from 'antd';
 import RoomForm from "../components/room/RoomForm.jsx";
 import DeleteModal from "../components/DeleteModal.jsx";
 import RoomsTable from "../components/room/RoomTable.jsx";
@@ -14,6 +14,8 @@ import useDeleteMutation from "../hooks/useDeleteMutation.js";
 import PaginationButtons from "../components/PaginationButtons.jsx";
 import PageHeader from "../components/PageHeader.jsx";
 import {useNavigate} from "react-router";
+import ModalPrintInvoices from "../components/invoices/ModalPrintInvoices.jsx";
+import ModalGenerateInvoices from "../components/invoices/ModalGenerateInvoices.jsx";
 
 export default function Rooms() {
     const queryClient = useQueryClient();
@@ -33,6 +35,8 @@ export default function Rooms() {
     const pagination = data?.pagination || {totalPages: 1, currentPage: 0, pageSize: 10};
     const deleteModal = useModal();
     const roomFormModal = useModal();
+    const generateInvoicesModal = useModal();
+    const printInvoicesModal = useModal();
 
     const saveOrUpdateMutation = useSaveOrUpdateMutation(queryClient, roomFormModal, RoomServices.saveOrUpdateRoom);
     const deleteMutation = useDeleteMutation(queryClient, deleteModal, RoomServices.deleteRoom, filters, setFilters, rooms);
@@ -49,6 +53,14 @@ export default function Rooms() {
         navigate(`/contracts?roomCode=${code}`);
     }
 
+    const handleGenerateInvoices = (values) => {
+        console.log(values);
+    }
+
+    const handlePrintInvoices = (values) => {
+        console.log(values);
+    }
+
     return (
         <div className="container-fluid">
             <PageHeader
@@ -63,17 +75,38 @@ export default function Rooms() {
                             onSearch={handleSearch}
                             onAdd={() => roomFormModal.openModal()}
                         >
-                            <select
-                                className="form-control mw-md-300px ms-md-auto mt-5
-                                mt-md-0 mb-3 mb-md-0"
+                            {/* Ant Design Select */}
+                            <Select
+                                className="mw-md-300px ms-md-auto mt-3 mt-md-0 mb-3 mb-md-0"
                                 value={status || ''}
-                                onChange={(e) => handleFilterChange({fieldName: 'status', newValue: e.target.value})}
+                                onChange={(value) => handleFilterChange({ fieldName: 'status', newValue: value })}
+                                placeholder="Chọn trạng thái"
+                                allowClear
                             >
                                 {statuses.map((status) => (
-                                    <option key={status.key + status.value} value={status.value}>{status.label}</option>
+                                    <Select.Option key={status.key + status.value} value={status.value}>
+                                        {status.label}
+                                    </Select.Option>
                                 ))}
-                            </select>
+                            </Select>
+
+                            {/* Các nút thêm vào */}
+                            <Button type="primary" style={{ backgroundColor: '#1abc9c', color: '#fff' }}
+                                onClick={generateInvoicesModal.openModal}>
+                                Sinh tất cả hóa đơn tiền nhà
+                            </Button>
+                            <Button type="default" style={{ backgroundColor: '#9b59b6', color: '#fff' }} onClick={() => console.log('Nhập dữ liệu')}>
+                                Nhập dữ liệu
+                            </Button>
+                            <Button type="default" style={{ backgroundColor: '#e67e22', color: '#fff' }}
+                                    onClick={printInvoicesModal.openModal}>
+                                In tất cả hóa đơn
+                            </Button>
+                            <Button type="primary" onClick={() => console.log('Gửi hóa đơn')}>
+                                Gửi hóa đơn
+                            </Button>
                         </TableControls>
+
 
                         <div className="table-responsive">
                             {isLoading ? (
@@ -119,6 +152,19 @@ export default function Rooms() {
                 visible={deleteModal.isOpen}
                 onConfirm={() => deleteMutation.mutate(deleteModal.selectedData)}
                 onCancel={deleteModal.closeModal}
+            />
+
+            <ModalGenerateInvoices
+                visible={generateInvoicesModal.isOpen}
+                onCancel={generateInvoicesModal.closeModal}
+                onSubmit={handleGenerateInvoices}
+            />
+
+            {/* Modal In Hóa Đơn */}
+            <ModalPrintInvoices
+                visible={printInvoicesModal.isOpen}
+                onCancel={printInvoicesModal.closeModal}
+                onPrint={handlePrintInvoices}
             />
         </div>
     );

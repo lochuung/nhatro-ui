@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import ModalViewInvoice from "./ModalViewInvoice";
 import ModalDeleteInvoce from "./ModalDeleteInvoice";
 import ModalUpdateInvoice from "./ModalUpdateInvoice";
 import ModalAddInvoice from "./ModalAddInvoice";
@@ -27,7 +26,8 @@ import "dayjs/locale/vi";
 import RoomForm from "../components/room/RoomForm.jsx";
 import InvoiceForm from "../components/invoices/InvoiceForm.jsx";
 import {toast} from "react-toastify";
-import {useLocation} from "react-router";  // Import tiếng Việt nếu cần
+import {useLocation} from "react-router";
+import ModalViewInvoice from "../components/invoices/ModalViewInvoice.jsx";  // Import tiếng Việt nếu cần
 dayjs.extend(customParseFormat);
 dayjs.locale("vi");
 
@@ -105,6 +105,7 @@ const Invoice = (props) => {
     const pagination = data?.pagination || {totalPages: 1, currentPage: 0, pageSize: 10};
     const deleteModal = useModal();
     const formModal = useModal();
+    const viewModal = useModal();
 
     const saveOrUpdateMutation = useSaveOrUpdateMutation(queryClient, formModal, InvoiceServices.saveOrUpdateInvoice);
     const deleteMutation = useDeleteMutation(queryClient, deleteModal, InvoiceServices.deleteInvoice, filters, setFilters, invoices);
@@ -218,6 +219,7 @@ const Invoice = (props) => {
                                     openForm={formModal.openModal}
                                     openDeleteConfirm={deleteModal.openModal}
                                     onPrint={onPrint}
+                                    onView={viewModal.openModal}
                                 />
                             )}
                         </div>
@@ -244,6 +246,12 @@ const Invoice = (props) => {
                 currentInvoice={formModal.selectedData}
                 onSubmit={(values) => saveOrUpdateMutation.mutate(values)}
                 onCancel={formModal.closeModal}
+            />
+
+            <ModalViewInvoice
+                visible={viewModal.isOpen}
+                onCancel={viewModal.closeModal}
+                invoice={viewModal.selectedData}
             />
         </div>
     );
