@@ -7,6 +7,10 @@ export default class ServiceServices {
         return api.post(`${ApiUrl.crudOtherFee}/search`, data);
     };
 
+    static getAll() {
+        return api.get(ApiUrl.crudOtherFee);
+    }
+
     static getOtherFee = (id) => {
         return api.get(`${ApiUrl.crudOtherFee}/${id}`);
     };
