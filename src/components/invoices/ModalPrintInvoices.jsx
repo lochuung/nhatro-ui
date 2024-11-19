@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Modal, DatePicker, Button } from 'antd';
+import React, {useState} from 'react';
+import {Modal, DatePicker, Button} from 'antd';
+import dayjs from '../../utils/locale-custom.js'
 
-const ModalPrintInvoices = ({ visible, onCancel, onPrint }) => {
-    const [selectedMonth, setSelectedMonth] = useState(null);
+const ModalPrintInvoices = ({visible, onCancel, onPrint}) => {
+    const [selectedMonth, setSelectedMonth] = useState(dayjs().format('MM/YYYY'));
 
     const handlePrint = () => {
         if (selectedMonth) {
+            // get selected month
             onPrint(selectedMonth);
         }
     };
@@ -23,7 +25,6 @@ const ModalPrintInvoices = ({ visible, onCancel, onPrint }) => {
                     key="print"
                     type="primary"
                     onClick={handlePrint}
-                    disabled={!selectedMonth}
                 >
                     In hóa đơn
                 </Button>,
@@ -34,8 +35,13 @@ const ModalPrintInvoices = ({ visible, onCancel, onPrint }) => {
                 <DatePicker
                     picker="month"
                     placeholder="Chọn tháng"
-                    onChange={(date) => setSelectedMonth(date ? date.format('MM/YYYY') : null)}
-                    style={{ width: '100%' }}
+                    defaultValue={dayjs()} // Mặc định là tháng hiện tại
+                    onChange={(date) => {
+                        const month = date ? date.format('MM/YYYY') : dayjs().format('MM/YYYY');
+                        setSelectedMonth(month); // Lấy giá trị hoặc mặc định là tháng hiện tại
+                    }}
+                    format="MM/YYYY" // Định dạng hiển thị
+                    style={{width: '100%'}}
                 />
             </div>
         </Modal>

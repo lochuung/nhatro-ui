@@ -10,6 +10,14 @@ export default class InvoiceServices {
         return `${ApiUrl.crudInvoice}/print/${id}`;
     }
 
+    static generateInvoices = ({monthYear}) => {
+        return api.post(`${ApiUrl.crudInvoice}/generate`, {monthYear, branchId: 1});
+    }
+
+    static printInvoices = ({month, year}) => {
+        return `${ApiUrl.crudInvoice}/print/monthly?month=${month}&year=${year}`;
+    }
+
     static
     getInvoice = (id) => {
         return api.get(`${ApiUrl.crudInvoice}/${id}`);
