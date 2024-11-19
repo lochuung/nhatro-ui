@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Modal, DatePicker, Button } from 'antd';
+import dayjs from "../../utils/locale-custom.js";
 
 const ModalGenerateInvoices = ({ visible, onCancel, onSubmit }) => {
-    const [selectedMonth, setSelectedMonth] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState(dayjs().format('MM/YYYY'));
 
     const handleGenerate = () => {
         if (selectedMonth) {
@@ -23,7 +24,6 @@ const ModalGenerateInvoices = ({ visible, onCancel, onSubmit }) => {
                     key="generate"
                     type="primary"
                     onClick={handleGenerate}
-                    disabled={!selectedMonth}
                 >
                     Sinh hóa đơn
                 </Button>,
@@ -34,8 +34,13 @@ const ModalGenerateInvoices = ({ visible, onCancel, onSubmit }) => {
                 <DatePicker
                     picker="month"
                     placeholder="Chọn tháng"
-                    onChange={(date) => setSelectedMonth(date ? date.format('MM/YYYY') : null)}
-                    style={{ width: '100%' }}
+                    defaultValue={dayjs()} // Mặc định là tháng hiện tại
+                    onChange={(date) => {
+                        const selectedMonth = date ? date.format('MM/YYYY') : dayjs().format('MM/YYYY');
+                        setSelectedMonth(selectedMonth); // Lấy giá trị hoặc mặc định là tháng hiện tại
+                    }}
+                    format="MM/YYYY" // Định dạng hiển thị
+                    style={{width: '100%'}}
                 />
             </div>
         </Modal>

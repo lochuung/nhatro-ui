@@ -19,18 +19,12 @@ import InvoiceServices from "../services/InvoiceServices.js";
 import {DatePicker, Dropdown, Menu, Select, Spin} from "antd";
 import {DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined} from "@ant-design/icons";
 import InvoicesTable from "../components/invoices/InvoicesTable.jsx";
-import moment from "moment";
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import "dayjs/locale/vi";
 import RoomForm from "../components/room/RoomForm.jsx";
 import InvoiceForm from "../components/invoices/InvoiceForm.jsx";
 import {toast} from "react-toastify";
 import {useLocation} from "react-router";
-import ModalViewInvoice from "../components/invoices/ModalViewInvoice.jsx";  // Import tiếng Việt nếu cần
-dayjs.extend(customParseFormat);
-dayjs.locale("vi");
-
+import ModalViewInvoice from "../components/invoices/ModalViewInvoice.jsx";
+import dayjs from '../utils/locale-custom.js'
 
 const Invoice = (props) => {
     // const [showModalAddInvoice, setShowModalAddInvoice] = useState(false);

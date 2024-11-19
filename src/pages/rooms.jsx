@@ -16,6 +16,8 @@ import PageHeader from "../components/PageHeader.jsx";
 import {useNavigate} from "react-router";
 import ModalPrintInvoices from "../components/invoices/ModalPrintInvoices.jsx";
 import ModalGenerateInvoices from "../components/invoices/ModalGenerateInvoices.jsx";
+import InvoiceServices from "../services/InvoiceServices.js";
+import {toast} from "react-toastify";
 
 export default function Rooms() {
     const queryClient = useQueryClient();
@@ -53,12 +55,29 @@ export default function Rooms() {
         navigate(`/contracts?roomCode=${code}`);
     }
 
-    const handleGenerateInvoices = (values) => {
-        console.log(values);
+    const handleGenerateInvoices = async (values) => {
+        try {
+            generateInvoicesModal.closeModal();
+            const {data} = await InvoiceServices.generateInvoices({monthYear: values});
+            if (data) {
+                toast.success('Sinh hóa đơn thành công');
+            }
+
+            // Refresh the rooms list
+            queryClient.invalidateQueries('invoices');
+        } catch (error) {
+            toast.error('Sinh hóa đơn thất bại');
+            setIsLoaded(false);
+        }
     }
 
     const handlePrintInvoices = (values) => {
-        console.log(values);
+        printInvoicesModal.closeModal();
+        const data = {
+            month: values.split('/')[0],
+            year: values.split('/')[1]
+        }
+        window.open(InvoiceServices.printInvoices(data), '_blank');
     }
 
     return (
@@ -79,7 +98,7 @@ export default function Rooms() {
                             <Select
                                 className="mw-md-300px ms-md-auto mt-3 mt-md-0 mb-3 mb-md-0"
                                 value={status || ''}
-                                onChange={(value) => handleFilterChange({ fieldName: 'status', newValue: value })}
+                                onChange={(value) => handleFilterChange({fieldName: 'status', newValue: value})}
                                 placeholder="Chọn trạng thái"
                                 allowClear
                             >
@@ -91,14 +110,15 @@ export default function Rooms() {
                             </Select>
 
                             {/* Các nút thêm vào */}
-                            <Button type="primary" style={{ backgroundColor: '#1abc9c', color: '#fff' }}
-                                onClick={generateInvoicesModal.openModal}>
+                            <Button type="primary" style={{backgroundColor: '#1abc9c', color: '#fff'}}
+                                    onClick={generateInvoicesModal.openModal}>
                                 Sinh tất cả hóa đơn tiền nhà
                             </Button>
-                            <Button type="default" style={{ backgroundColor: '#9b59b6', color: '#fff' }} onClick={() => console.log('Nhập dữ liệu')}>
+                            <Button type="default" style={{backgroundColor: '#9b59b6', color: '#fff'}}
+                                    onClick={() => console.log('Nhập dữ liệu')}>
                                 Nhập dữ liệu
                             </Button>
-                            <Button type="default" style={{ backgroundColor: '#e67e22', color: '#fff' }}
+                            <Button type="default" style={{backgroundColor: '#e67e22', color: '#fff'}}
                                     onClick={printInvoicesModal.openModal}>
                                 In tất cả hóa đơn
                             </Button>

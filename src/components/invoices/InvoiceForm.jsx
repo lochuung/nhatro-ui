@@ -7,8 +7,11 @@ import ServiceServices from '../../services/ServiceServices.js';
 import SettingServices from "../../services/SettingServices.js";
 import {SettingConstants} from "../../constant/SettingConstants.js";
 import CurrencyInput from "../CurrencyInput.jsx";
+import dayjs from '../../utils/locale-custom.js';
 
 const {Option} = Select;
+
+const {RangePicker} = DatePicker;
 
 const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) => {
     const [form] = Form.useForm();
@@ -39,9 +42,11 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                 form.setFieldsValue({
                     ...currentInvoice,
                     contractId: currentInvoice.contract.id,
-                    startDate: currentInvoice.startDate ? moment(currentInvoice.startDate) : null,
-                    endDate: currentInvoice.endDate ? moment(currentInvoice.endDate) : null,
                     services: currentInvoice.serviceFees || [],
+                    dateRange: [
+                        currentInvoice.startDate ? dayjs(currentInvoice.startDate) : null,
+                        currentInvoice.endDate ? dayjs(currentInvoice.endDate) : null,
+                    ]
                 });
             } else {
                 form.resetFields();
@@ -73,12 +78,15 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
             const values = await form.validateFields();
             const {roomOption, stayDays, services, ...filteredValues} = values;
 
+            const [startDate, endDate] = values.dateRange || [];
             const formattedValues = {
                 ...filteredValues,
                 serviceFees: services,
-                startDate: values.startDate ? values.startDate.toISOString() : null,
-                endDate: values.endDate ? values.endDate.toISOString() : null,
+                startDate: startDate ? startDate.toISOString() : null,
+                endDate: endDate ? endDate.toISOString() : null,
             };
+
+            delete formattedValues.dateRange; // Xóa `dateRange` khỏi dữ liệu gửi đi
             onSubmit(formattedValues);
         } catch (error) {
             console.log('Validation Failed:', error);
@@ -463,21 +471,16 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                 </Form.Item>
 
 
-                {/* Ngày bắt đầu và kết thúc */}
                 <Form.Item
-                    label="Ngày bắt đầu"
-                    name="startDate"
-                    rules={[{required: true, message: 'Vui lòng chọn ngày bắt đầu!'}]}
+                    label="Chọn ngày"
+                    name="dateRange"
+                    rules={[{required: true, message: "Vui lòng chọn khoảng ngày!"}]}
                 >
-                    <DatePicker placeholder="Chọn ngày bắt đầu" format="YYYY-MM-DD"/>
-                </Form.Item>
-
-                <Form.Item
-                    label="Ngày kết thúc"
-                    name="endDate"
-                    rules={[{required: true, message: 'Vui lòng chọn ngày kết thúc!'}]}
-                >
-                    <DatePicker placeholder="Chọn ngày kết thúc" format="YYYY-MM-DD"/>
+                    <RangePicker
+                        placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
+                        format="YYYY-MM-DD"
+                        style={{width: "100%"}}
+                    />
                 </Form.Item>
 
                 <Form.Item label="Ghi chú" name="note">
