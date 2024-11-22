@@ -1,23 +1,23 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {useQueryClient} from "@tanstack/react-query";
 import useTableFilters from "../hooks/useTableFilters.js";
-import useRoomsQuery from "../hooks/useRoomsQuery.js";
 import useModal from "../hooks/useModal.js";
 import useSaveOrUpdateMutation from "../hooks/useSaveOrUpdateMutation.js";
-import RoomServices from "../services/RoomServices.js";
 import useDeleteMutation from "../hooks/useDeleteMutation.js";
 import {useLocation, useNavigate} from "react-router";
 import PageHeader from "../components/PageHeader.jsx";
 import TableControls from "../components/TableControls.jsx";
 import {Spin} from "antd";
-import RoomsTable from "../components/room/RoomTable.jsx";
 import PaginationButtons from "../components/PaginationButtons.jsx";
 import RoomForm from "../components/room/RoomForm.jsx";
 import DeleteModal from "../components/DeleteModal.jsx";
 import useContractsQuery from "../hooks/useContractsQuery.js";
 import ContractServices from "../services/ContractServices.js";
 import ContractTable from "../components/contract/ContractTable.jsx";
-import InvoiceServices from "../services/InvoiceServices.js";
+import ModalViewContract from "../components/contract/ModalViewContract.jsx";
+import ModalCheckout from "../components/contract/ModalCheckout.jsx";
+import {toast} from "react-toastify";
+import ModalEditMembers from "../components/contract/ModalEditMembers.jsx";
 
 // export default function Contracts() {
 //   const [contracts, setContracts] = useState([
@@ -1208,6 +1208,9 @@ export default function Contract() {
     const pagination = data?.pagination || {totalPages: 1, currentPage: 0, pageSize: 10};
     const deleteModal = useModal();
     const formModal = useModal();
+    const viewModal = useModal();
+    const editMembersModal = useModal();
+    const checkoutModal = useModal();
 
     const saveOrUpdateMutation = useSaveOrUpdateMutation(queryClient, formModal, ContractServices.saveOrUpdateContract);
     const deleteMutation = useDeleteMutation(queryClient, deleteModal, ContractServices.deleteContract, filters, setFilters, contracts);
@@ -1228,6 +1231,56 @@ export default function Contract() {
         navigate(`/invoices?contractId=${id}`);
     }
 
+    const contractWithData = async (c, callback) => {
+        const contract = await ContractServices.getContract(c?.id);
+        callback(contract.data);
+    }
+
+    const checkoutSubmit = async (values) => {
+        const {data} = await ContractServices.checkout(values);
+        if (data) {
+            toast.success('Trả phòng thành công');
+            queryClient.invalidateQueries('contracts');
+            checkoutModal.closeModal();
+        }
+    }
+
+    const onAddMembers = async (dt) => {
+        const {data} = await ContractServices.addMembers(dt);
+        if (data) {
+            toast.success('Thêm thành viên thành công');
+            queryClient.invalidateQueries('contracts');
+            editMembersModal.closeModal();
+        }
+        if (data.error) {
+            toast.error(data.error.response.data.description);
+        }
+    };
+
+    const onChangeOwner = async (dt) => {
+        const {data} = await ContractServices.changeOwner(dt);
+        if (data) {
+            toast.success('Thay đổi chủ phòng thành công');
+            queryClient.invalidateQueries('contracts');
+            editMembersModal.closeModal();
+        }
+        if (data.error) {
+            toast.error(data.error.response.data.description);
+        }
+    }
+
+    const onLeave = async (dt) => {
+        const {data} = await ContractServices.leave(dt);
+        if (data) {
+            toast.success('Rời phòng thành công');
+            queryClient.invalidateQueries('contracts');
+            editMembersModal.closeModal();
+        }
+        if (data.error) {
+            toast.error(data.error.response.data.description);
+        }
+    }
+
     return (
         <div className="container-fluid">
             <PageHeader
@@ -1240,7 +1293,6 @@ export default function Contract() {
                         <TableControls
                             title={`Hợp đồng (${roomCode || 'Tất cả'})`}
                             onSearch={handleSearch}
-                            onAdd={() => formModal.openModal()}
                         >
                             <select
                                 className="form-control mw-md-300px ms-md-auto mt-5
@@ -1272,6 +1324,9 @@ export default function Contract() {
                                     currentSort={sort}
                                     onPrint={onPrint}
                                     onInvoicesView={onInvoicesView}
+                                    onView={(c) => contractWithData(c, viewModal.openModal)}
+                                    onCheckout={checkoutModal.openModal}
+                                    onEditMembers={(c) => contractWithData(c, editMembersModal.openModal)}
                                 />
                             )}
                         </div>
@@ -1299,6 +1354,28 @@ export default function Contract() {
                 visible={deleteModal.isOpen}
                 onConfirm={() => deleteMutation.mutate(deleteModal.selectedData)}
                 onCancel={deleteModal.closeModal}
+            />
+
+            <ModalViewContract
+                visible={viewModal.isOpen}
+                contract={viewModal.selectedData}
+                onClose={viewModal.closeModal}
+            />
+
+            <ModalEditMembers
+                visible={editMembersModal.isOpen}
+                contract={editMembersModal.selectedData}
+                onClose={editMembersModal.closeModal}
+                onAddMembers={onAddMembers}
+                onChangeOwner={onChangeOwner}
+                onLeave={onLeave}
+            />
+
+            <ModalCheckout
+                visible={checkoutModal.isOpen}
+                contract={checkoutModal.selectedData}
+                onClose={checkoutModal.closeModal}
+                onSubmit={checkoutSubmit}
             />
         </div>
     );

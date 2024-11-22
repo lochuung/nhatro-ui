@@ -3,7 +3,6 @@ import {Spin} from "antd";
 import ServiceTable from "../components/services_fee/ServiceTable.jsx";
 import useServicesQuery from "../hooks/useServicesQuery.js";
 import useModal from "../hooks/useModal.js";
-import SearchInput from "../components/SearchInput.jsx";
 import DeleteModal from "../components/DeleteModal.jsx";
 import ServiceFeeForm from "../components/services_fee/ServiceFeeForm.jsx";
 import PaginationButtons from "../components/PaginationButtons.jsx";

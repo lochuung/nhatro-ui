@@ -1,8 +1,7 @@
 import React, {useMemo} from "react";
 import SortableTable from "../SortableTable.jsx";
-import {Dropdown, Menu, Button} from 'antd';
-import {DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined, PrinterOutlined} from '@ant-design/icons';
-import {FcPrint} from "react-icons/fc";
+import {Button, Dropdown, Menu} from 'antd';
+import {DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined} from '@ant-design/icons';
 import {AiOutlinePrinter} from "react-icons/ai";
 
 const InvoicesTable = ({

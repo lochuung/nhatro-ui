@@ -1,27 +1,19 @@
 import React, {useEffect, useState} from "react";
-import ModalDeleteInvoce from "./ModalDeleteInvoice";
-import ModalUpdateInvoice from "./ModalUpdateInvoice";
-import ModalAddInvoice from "./ModalAddInvoice";
 import PageHeader from "../components/PageHeader.jsx";
 import TableControls from "../components/TableControls.jsx";
 import PaginationButtons from "../components/PaginationButtons.jsx";
 import DeleteModal from "../components/DeleteModal.jsx";
-import deleteModal from "../components/DeleteModal.jsx";
 import {useQueryClient} from "@tanstack/react-query";
 import useTableFilters from "../hooks/useTableFilters.js";
-import useRoomsQuery from "../hooks/useRoomsQuery.js";
 import useModal from "../hooks/useModal.js";
 import useSaveOrUpdateMutation from "../hooks/useSaveOrUpdateMutation.js";
 import RoomServices from "../services/RoomServices.js";
 import useDeleteMutation from "../hooks/useDeleteMutation.js";
 import useInvoicesQuery from "../hooks/useInvoicesQuery.js";
 import InvoiceServices from "../services/InvoiceServices.js";
-import {DatePicker, Dropdown, Menu, Select, Spin} from "antd";
-import {DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined} from "@ant-design/icons";
+import {DatePicker, Select, Spin} from "antd";
 import InvoicesTable from "../components/invoices/InvoicesTable.jsx";
-import RoomForm from "../components/room/RoomForm.jsx";
 import InvoiceForm from "../components/invoices/InvoiceForm.jsx";
-import {toast} from "react-toastify";
 import {useLocation} from "react-router";
 import ModalViewInvoice from "../components/invoices/ModalViewInvoice.jsx";
 import dayjs from '../utils/locale-custom.js'
@@ -205,7 +197,7 @@ const Invoice = (props) => {
                                 </div>
                             ) : invoices.length === 0 ? (
                                 <div className="text-center my-4">
-                                    <span>No data found</span>
+                                    <span>Không có hóa đơn</span>
                                 </div>
                             ) : (
                                 <InvoicesTable

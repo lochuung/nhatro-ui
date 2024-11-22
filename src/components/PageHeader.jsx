@@ -1,7 +1,5 @@
 import React from 'react';
-import { Button } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa';
+import {useNavigate} from 'react-router-dom';
 
 const PageHeader = ({ title }) => {
     const navigate = useNavigate();

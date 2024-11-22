@@ -2,8 +2,9 @@ import React, {useMemo} from "react";
 import SortableTable from "../SortableTable.jsx";
 import {Button, Dropdown, Menu} from "antd";
 import {DeleteOutlined, EditOutlined, FileTextOutlined, MoreOutlined} from "@ant-design/icons";
+import {IoContractOutline} from "react-icons/io5";
 
-const RoomTable = ({rooms, openRoomForm, onContractsView, openDeleteConfirm, onSort, currentSort}) => {
+const RoomTable = ({rooms, openRoomForm, onContractsView, onCheckin, openDeleteConfirm, onSort, currentSort}) => {
     const columns = useMemo(() => [
         {Header: "Tên phòng", accessor: "name"},
         {Header: "Mã phòng", accessor: "code"},
@@ -36,6 +37,14 @@ const RoomTable = ({rooms, openRoomForm, onContractsView, openDeleteConfirm, onS
                             onClick={() => onContractsView(row.original.code)}
                             >
                             Xem hợp đồng
+                        </Menu.Item>
+                        <Menu.Divider />
+                        <Menu.Item
+                            key={"checkin" + row.original.id}
+                            icon={<IoContractOutline style={{color: '#d90d65'}}/>}
+                            onClick={() => onCheckin(row.original)}
+                        >
+                            Cho thuê
                         </Menu.Item>
                         <Menu.Divider />
                         <Menu.Item
