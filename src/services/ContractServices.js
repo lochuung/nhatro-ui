@@ -4,12 +4,17 @@ import api from "../utils/api.js";
 
 export default class ContractServices {
     static getContracts = (data) => {
+        data['sorts'] = data['sorts'] || [{key: 'createdDate', direction: 'DESC'}];
         return api.post(`${ApiUrl.crudContract}/search`, data);
     };
 
     static getContract = (id) => {
         return api.get(`${ApiUrl.crudContract}/${id}`);
     };
+
+    static checkout = ({contractId, checkoutDate}) => {
+        return api.post(`${ApiUrl.crudContract}/check-out`, {contractId, checkoutDate});
+    }
 
     static getPrintUrl = (id) => {
         return `${ApiUrl.crudContract}/print/${id}`;
@@ -23,6 +28,10 @@ export default class ContractServices {
         return api.post(ApiUrl.crudContract, {...data, branchId: 1});
     };
 
+    static checkin = (data) => {
+        return api.post(`${ApiUrl.crudContract}/check-in`, data);
+    };
+
     static saveOrUpdateContract = (id, data) => {
         if (!id) {
             return ContractServices.createContract(data);
@@ -33,4 +42,17 @@ export default class ContractServices {
     static deleteContract = (id) => {
         return api.delete(`${ApiUrl.crudContract}/${id}`);
     };
+
+    static addMembers(data) {
+        return api.post(`${ApiUrl.crudContract}/add-member`, data);
+    }
+
+
+    static changeOwner(data) {
+        return api.post(`${ApiUrl.crudContract}/change-owner`, data);
+    }
+
+    static leave(data) {
+        return api.post(`${ApiUrl.crudContract}/leave`, data);
+    }
 }

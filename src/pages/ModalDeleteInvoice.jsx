@@ -1,6 +1,5 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { toast } from 'react-toastify';
 
 const ModalDeleteInvoce = (props) => {
     const { show, setShow, currentContract, invoices, setInvoices } = props;

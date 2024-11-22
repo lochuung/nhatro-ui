@@ -18,6 +18,8 @@ import ModalPrintInvoices from "../components/invoices/ModalPrintInvoices.jsx";
 import ModalGenerateInvoices from "../components/invoices/ModalGenerateInvoices.jsx";
 import InvoiceServices from "../services/InvoiceServices.js";
 import {toast} from "react-toastify";
+import ModalCheckin from "../components/contract/ModalCheckin.jsx";
+import ContractServices from "../services/ContractServices.js";
 
 export default function Rooms() {
     const queryClient = useQueryClient();
@@ -39,6 +41,7 @@ export default function Rooms() {
     const roomFormModal = useModal();
     const generateInvoicesModal = useModal();
     const printInvoicesModal = useModal();
+    const checkinModal = useModal();
 
     const saveOrUpdateMutation = useSaveOrUpdateMutation(queryClient, roomFormModal, RoomServices.saveOrUpdateRoom);
     const deleteMutation = useDeleteMutation(queryClient, deleteModal, RoomServices.deleteRoom, filters, setFilters, rooms);
@@ -58,7 +61,7 @@ export default function Rooms() {
     const handleGenerateInvoices = async (values) => {
         try {
             generateInvoicesModal.closeModal();
-            const {data} = await InvoiceServices.generateInvoices({monthYear: values});
+            const {data} = await InvoiceServices.generateInvoices(values);
             if (data) {
                 toast.success('Sinh hóa đơn thành công');
             }
@@ -80,6 +83,20 @@ export default function Rooms() {
         window.open(InvoiceServices.printInvoices(data), '_blank');
     }
 
+    let handleCheckin = async (values) => {
+        await ContractServices.checkin(values);
+        toast.success('Cho thuê phòng thành công');
+        checkinModal.closeModal();
+        queryClient.invalidateQueries('rooms');
+        queryClient.invalidateQueries('contracts');
+    };
+    const openCheckinModal = (room) => {
+        if (room.status === 'RENTED') {
+            toast.error('Phòng đã được cho thuê');
+            return;
+        }
+        checkinModal.openModal(room);
+    };
     return (
         <div className="container-fluid">
             <PageHeader
@@ -145,6 +162,7 @@ export default function Rooms() {
                                     onSort={handleSort}
                                     currentSort={sort}
                                     onContractsView={onContractsView}
+                                    onCheckin={openCheckinModal}
                                 />
                             )}
                         </div>
@@ -172,6 +190,13 @@ export default function Rooms() {
                 visible={deleteModal.isOpen}
                 onConfirm={() => deleteMutation.mutate(deleteModal.selectedData)}
                 onCancel={deleteModal.closeModal}
+            />
+
+            <ModalCheckin
+                visible={checkinModal.isOpen}
+                room={checkinModal.selectedData}
+                onClose={checkinModal.closeModal}
+                onSubmit={handleCheckin}
             />
 
             <ModalGenerateInvoices

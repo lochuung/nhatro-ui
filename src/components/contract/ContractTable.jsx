@@ -1,9 +1,20 @@
 import React, {useMemo} from "react";
 import SortableTable from "../SortableTable.jsx";
 import {Button, Dropdown, Menu} from "antd";
-import {DeleteOutlined, EditOutlined, FileTextOutlined, MoreOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EyeOutlined, FileTextOutlined, LogoutOutlined, MoreOutlined} from "@ant-design/icons";
+import {MdOutlineRememberMe} from "react-icons/md";
 
-const ContractTable = ({datas, openForm, onInvoicesView, onPrint, openDelete, onSort, currentSort}) => {
+const ContractTable = ({
+                           datas,
+                           onInvoicesView,
+                           onCheckout,
+                           onView,
+                           onEditMembers,
+                           onPrint,
+                           openDelete,
+                           onSort,
+                           currentSort
+                       }) => {
     const columns = useMemo(() => [
         {Header: "Tên phòng", accessor: "room.name"},
         {Header: "Mã phòng", accessor: "room.code"},
@@ -22,8 +33,8 @@ const ContractTable = ({datas, openForm, onInvoicesView, onPrint, openDelete, on
             accessor: "status",
             Cell: ({value}) => (
                 <>
-                    <span className={`legend-circle ${value === "RENTED" ? "bg-danger" : "bg-success"}`}/>
-                    {value === "OPENING" ? "Đang mở" : "Đã đống"}
+                    <span className={`legend-circle ${value !== 'OPENING' ? "bg-danger" : "bg-success"}`}/>
+                    {value === "OPENING" ? "Đang mở" : "Đã đóng"}
                 </>
             ),
         },
@@ -42,7 +53,14 @@ const ContractTable = ({datas, openForm, onInvoicesView, onPrint, openDelete, on
                         >
                             Xem hóa đơn
                         </Menu.Item>
-                        <Menu.Divider />
+                        <Menu.Divider/>
+                        <Menu.Item
+                            key={"view" + row.original.id}
+                            icon={<EyeOutlined style={{color: '#1890ff'}}/>}
+                            onClick={() => onView(row.original)}
+                        >
+                            Xem hợp đồng
+                        </Menu.Item>
                         <Menu.Item
                             key={"print" + row.original.id}
                             icon={<FileTextOutlined style={{color: '#1890ff'}}/>}
@@ -50,12 +68,21 @@ const ContractTable = ({datas, openForm, onInvoicesView, onPrint, openDelete, on
                         >
                             In hợp đồng
                         </Menu.Item>
+                        <Menu.Divider/>
+                        <Menu.Item
+                            key={"checkout" + row.original.id}
+                            icon={<LogoutOutlined style={{color: '#d42e00'}}/>}
+                            onClick={() => onCheckout(row.original)}
+                        >
+                            Trả phòng
+                        </Menu.Item>
+                        <Menu.Divider/>
                         <Menu.Item
                             key={"edit" + row.original.id}
-                            icon={<EditOutlined style={{color: '#1890ff'}}/>}
-                            onClick={() => openForm(row.original)}
+                            icon={<MdOutlineRememberMe  style={{color: '#1890ff'}}/>}
+                            onClick={() => onEditMembers(row.original)}
                         >
-                            Chỉnh sửa
+                            Chỉnh sửa thành viên
                         </Menu.Item>
                         <Menu.Item
                             key={"delete" + row.original.id}

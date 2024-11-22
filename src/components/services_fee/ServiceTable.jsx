@@ -1,7 +1,7 @@
 import React, {useMemo} from "react";
 import SortableTable from "../SortableTable.jsx";
-import {Dropdown, Menu, Button} from 'antd';
-import {DeleteOutlined, EditOutlined, EyeOutlined, MoreOutlined} from '@ant-design/icons';
+import {Button, Dropdown, Menu} from 'antd';
+import {DeleteOutlined, EditOutlined, MoreOutlined} from '@ant-design/icons';
 
 const ServiceTable = ({services, loading, openServiceFeeForm, openDeleteConfirm, onSort, currentSort}) => {
     const columns = useMemo(

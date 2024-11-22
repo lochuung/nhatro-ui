@@ -1,7 +1,6 @@
-import {Form, Input, Modal, DatePicker, Select, Button, Space, InputNumber} from 'antd';
-import {PlusOutlined, MinusCircleOutlined} from '@ant-design/icons';
+import {Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space} from 'antd';
+import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons';
 import {useEffect, useState} from 'react';
-import moment from 'moment';
 import ContractServices from '../../services/ContractServices.js';
 import ServiceServices from '../../services/ServiceServices.js';
 import SettingServices from "../../services/SettingServices.js";

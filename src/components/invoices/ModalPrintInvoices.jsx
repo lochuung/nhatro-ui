@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Modal, DatePicker, Button} from 'antd';
+import {Button, DatePicker, Modal} from 'antd';
 import dayjs from '../../utils/locale-custom.js'
 
 const ModalPrintInvoices = ({visible, onCancel, onPrint}) => {
