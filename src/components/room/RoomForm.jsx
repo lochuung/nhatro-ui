@@ -1,7 +1,8 @@
 import {Form, Input, Modal, Select} from 'antd';
 import {useEffect, useState} from "react";
 import ReactQuill from 'react-quill'; // Import the editor
-import 'react-quill/dist/quill.snow.css'; // Import editor styling
+import 'react-quill/dist/quill.snow.css';
+import CurrencyInput from "../CurrencyInput.jsx"; // Import editor styling
 
 const { Option } = Select;
 
@@ -78,7 +79,7 @@ const RoomForm = ({ visible, isEditMode, currentRoom, onSubmit, onCancel }) => {
                     name="price"
                     rules={[{ required: true, message: 'Vui lòng nhập giá phòng!' }]}
                 >
-                    <Input type="number" placeholder="Nhập giá phòng"/>
+                    <CurrencyInput placeholder="Nhập giá phòng"/>
                 </Form.Item>
 
                 <Form.Item

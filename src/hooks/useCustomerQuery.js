@@ -1,22 +1,20 @@
 import {useQuery} from '@tanstack/react-query';
 
 import {buildSearchData} from '../utils/BuildQueryData.js';
-import ContractServices from "../services/ContractServices.js";
+import CustomerServices from "../services/CustomerServices.js";
 
 // Custom hook for fetching rooms
-const useContractsQuery = ({page = 0, size = 10, status = null, search = null, roomCode = null, sort = null}) => {
+const useCustomersQuery = ({page = 0, size = 10, search = null, sort = null}) => {
     return useQuery({
-        queryKey: ['contracts', {page, size, search, status, roomCode, sort}],
+        queryKey: ['customers', {page, size, search, sort}],
         queryFn: async () => {
-            const data = buildSearchData({page, size, status, search, sort,
-                searchProperties: ['owner.name', 'room.name']});
+            const data = buildSearchData({page, size, search, sort,
+                searchProperties: ['name', 'phone']});
 
-            data['roomCode'] = roomCode === "" ? null : roomCode;
-
-            const response = await ContractServices.getContracts(data);
+            const response = await CustomerServices.search(data);
             // Return structured data as expected by the consuming components
             return {
-                contracts: response.data.content,
+                customers: response.data.content,
                 pagination: {
                     totalPages: response.data.totalPages,
                     totalElements: response.data.totalElements,
@@ -29,4 +27,4 @@ const useContractsQuery = ({page = 0, size = 10, status = null, search = null, r
     });
 };
 
-export default useContractsQuery;
+export default useCustomersQuery;

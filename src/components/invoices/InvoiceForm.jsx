@@ -6,7 +6,7 @@ import ServiceServices from '../../services/ServiceServices.js';
 import SettingServices from "../../services/SettingServices.js";
 import {SettingConstants} from "../../constant/SettingConstants.js";
 import CurrencyInput from "../CurrencyInput.jsx";
-import dayjs from '../../utils/locale-custom.js';
+import dayjs from "dayjs";
 
 const {Option} = Select;
 
@@ -78,11 +78,20 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
             const {roomOption, stayDays, services, ...filteredValues} = values;
 
             const [startDate, endDate] = values.dateRange || [];
+            let start = startDate ? dayjs(startDate) : null;
+            let end = endDate ? dayjs(endDate) : null;
+            // plus 7 hour
+            if (start) {
+                start = start.add(7, 'hour');
+            }
+            if (end) {
+                end = end.add(7, 'hour');
+            }
             const formattedValues = {
                 ...filteredValues,
                 serviceFees: services,
-                startDate: startDate ? startDate.toISOString() : null,
-                endDate: endDate ? endDate.toISOString() : null,
+                startDate: start,
+                endDate: end,
             };
 
             delete formattedValues.dateRange; // Xóa `dateRange` khỏi dữ liệu gửi đi
