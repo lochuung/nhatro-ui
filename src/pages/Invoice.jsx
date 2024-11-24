@@ -58,7 +58,7 @@ const Invoice = (props) => {
     const queryClient = useQueryClient();
     const {filters, setFilters, handlePageChange, handleSearch, handleSort, handleFilterChange} = useTableFilters({
         page: 0,
-        size: 4,
+        size: 6,
         status: null,
         search: '',
         sort: null,
@@ -206,6 +206,8 @@ const Invoice = (props) => {
                                     openDeleteConfirm={deleteModal.openModal}
                                     onPrint={onPrint}
                                     onView={viewModal.openModal}
+                                    onSort={handleSort}
+                                    currentSort={sort}
                                 />
                             )}
                         </div>

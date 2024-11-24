@@ -25,7 +25,7 @@ export default function Rooms() {
     const queryClient = useQueryClient();
     const {filters, setFilters, handlePageChange, handleSearch, handleSort, handleFilterChange} = useTableFilters({
         page: 0,
-        size: 4,
+        size: 6,
         status: null,
         search: '',
         sort: null,
@@ -69,8 +69,7 @@ export default function Rooms() {
             // Refresh the rooms list
             queryClient.invalidateQueries('invoices');
         } catch (error) {
-            toast.error('Sinh hóa đơn thất bại');
-            setIsLoaded(false);
+            console.log(error);
         }
     }
 

@@ -1,6 +1,7 @@
 import {Form, Input, Modal} from "antd";
 import {useState} from "react";
 import ReactQuill from "react-quill";
+import CurrencyInput from "../CurrencyInput.jsx";
 
 
 const ServiceFeeForm = ({visible, isEditMode, currentServiceFee, onSubmit, onCancel}) => {
@@ -57,7 +58,7 @@ const ServiceFeeForm = ({visible, isEditMode, currentServiceFee, onSubmit, onCan
                     name="unitPrice"
                     rules={[{required: true, message: 'Vui lòng nhập giá dịch vụ!'}]}
                 >
-                    <Input type="number" placeholder="Nhập giá dịch vụ"/>
+                    <CurrencyInput placeholder="Nhập giá dịch vụ"/>
                 </Form.Item>
             </Form>
         </Modal>

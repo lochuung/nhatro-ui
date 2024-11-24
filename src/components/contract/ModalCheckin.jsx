@@ -5,6 +5,8 @@ import dayjs from "dayjs";
 import CurrencyInput from "../CurrencyInput";
 import CustomerServices from "../../services/CustomerServices.js";
 import {toast} from "react-toastify";
+import api from "../../utils/api.js";
+import ApiUrl from "../../utils/api-url.js";
 
 const {Option} = Select;
 
@@ -47,6 +49,19 @@ const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
             setExistCustomers(fetchCustomers.data);
         });
     }, []);
+
+    useEffect(() => {
+        if (room) {
+            api.get(ApiUrl.crudRoom + "/latest-number-index/" + room.id).then((res) => {
+                if (res.data) {
+                    form.setFieldsValue({
+                        checkinElectricNumber: res.data.latestElectricityIndex,
+                        checkinWaterNumber: res.data.latestWaterIndex,
+                    });
+                }
+            });
+        }
+    }, [room]);
 
     return (
         <Modal
@@ -96,6 +111,7 @@ const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
                 <Form.Item
                     label="Giá phòng"
                     name="price"
+                    initialValue={room?.price}
                     rules={[{required: true, message: "Vui lòng nhập giá phòng!"}]}
                 >
                     <CurrencyInput placeholder="Nhập giá phòng"/>
@@ -131,154 +147,159 @@ const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
                     {(fields, {add, remove}) => (
                         <>
                             {/* Hiển thị danh sách khách hàng trong Form.List */}
-                            {fields.map(({key, name, fieldKey, ...restField}) => (
-                                <div
-                                    key={key}
-                                    style={{
-                                        marginBottom: 16,
-                                        border: "1px solid #ddd",
-                                        padding: "16px",
-                                        borderRadius: "8px",
-                                    }}
-                                >
-                                    <Space style={{display: "flex", justifyContent: "space-between"}}>
-                                        <h4>Khách hàng {key === 0 ? '(Chủ phòng)' : null}</h4>
-                                        <div>
-                                            {/* Nút Chọn Chủ Phòng */}
-                                            {key !== 0 && (
-                                                <Button
-                                                    type="link"
-                                                    size="small"
-                                                    style={{padding: 0, color: "#1890ff"}} // Đơn giản hóa giao diện nút
+                            {fields.map(({key, name, fieldKey, ...restField}) => {
+                                const customers = form.getFieldValue("customers") || [];
+                                const isOldCustomer = customers[name]?.isOldCustomer;
+
+                                return (
+                                    <div
+                                        key={key}
+                                        style={{
+                                            marginBottom: 16,
+                                            border: "1px solid #ddd",
+                                            padding: "16px",
+                                            borderRadius: "8px",
+                                        }}
+                                    >
+                                        <Space style={{display: "flex", justifyContent: "space-between"}}>
+                                            <h4>Khách hàng {key === 0 ? "(Chủ phòng)" : null}</h4>
+                                            <div>
+                                                {/* Nút Chọn Chủ Phòng */}
+                                                {key !== 0 && (
+                                                    <Button
+                                                        type="link"
+                                                        size="small"
+                                                        style={{padding: 0, color: "#1890ff"}}
+                                                        onClick={() => {
+                                                            const currentCustomers = form.getFieldValue("customers") || [];
+                                                            const selectedCustomer = currentCustomers[name];
+
+                                                            // Đẩy khách hàng được chọn lên đầu danh sách
+                                                            const updatedCustomers = [
+                                                                selectedCustomer,
+                                                                ...currentCustomers.filter((_, index) => index !== name),
+                                                            ];
+
+                                                            form.setFieldsValue({customers: updatedCustomers});
+                                                            toast.success(`${selectedCustomer?.name} đã được chọn làm chủ phòng.`);
+                                                        }}
+                                                    >
+                                                        Chọn làm chủ phòng
+                                                    </Button>
+                                                )}
+
+                                                {/* Nút Xóa */}
+                                                <MinusCircleOutlined
                                                     onClick={() => {
                                                         const currentCustomers = form.getFieldValue("customers") || [];
-                                                        const selectedCustomer = currentCustomers[name];
-
-                                                        // Đẩy khách hàng được chọn lên đầu danh sách
-                                                        const updatedCustomers = [
-                                                            selectedCustomer,
-                                                            ...currentCustomers.filter((_, index) => index !== name),
-                                                        ];
-
-                                                        form.setFieldsValue({customers: updatedCustomers});
-                                                        toast.success(`${selectedCustomer?.name} đã được chọn làm chủ phòng.`);
+                                                        if (currentCustomers.length > 1) {
+                                                            remove(name);
+                                                        } else {
+                                                            Modal.warning({
+                                                                title: "Không thể xóa",
+                                                                content: "Hợp đồng phải có ít nhất 1 khách hàng.",
+                                                            });
+                                                        }
                                                     }}
-                                                >
-                                                    Chọn làm chủ phòng
-                                                </Button>
-                                            )}
+                                                    style={{color: "red", cursor: "pointer", marginLeft: 8}}
+                                                />
+                                            </div>
+                                        </Space>
 
-                                            {/* Nút Xóa */}
-                                            <MinusCircleOutlined
-                                                onClick={() => {
-                                                    const currentCustomers = form.getFieldValue("customers") || [];
-                                                    if (currentCustomers.length > 1) {
-                                                        remove(name);
-                                                    } else {
-                                                        // Nếu chỉ còn 1 khách, thông báo lỗi
-                                                        Modal.warning({
-                                                            title: "Không thể xóa",
-                                                            content: "Hợp đồng phải có ít nhất 1 khách hàng.",
-                                                        });
-                                                    }
-                                                }}
-                                                style={{color: "red", cursor: "pointer", marginLeft: 8}}
-                                            />
-                                        </div>
-                                    </Space>
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, "name"]}
+                                            label="Họ và tên"
+                                            fieldKey={[fieldKey, "name"]}
+                                            rules={[{required: true, message: "Vui lòng nhập tên khách hàng!"}]}
+                                        >
+                                            <Input placeholder="Tên khách hàng" disabled={isOldCustomer}/>
+                                        </Form.Item>
 
-                                    <Form.Item
-                                        {...restField}
-                                        name={[name, "name"]}
-                                        label="Họ và tên"
-                                        fieldKey={[fieldKey, "name"]}
-                                        rules={[{required: true, message: "Vui lòng nhập tên khách hàng!"}]}
-                                    >
-                                        <Input placeholder="Tên khách hàng"/>
-                                    </Form.Item>
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, "birthday"]}
+                                            label="Ngày sinh"
+                                            fieldKey={[fieldKey, "birthday"]}
+                                            // rules={[{ required: true, message: "Vui lòng nhập ngày sinh!" }]}
+                                        >
+                                            <DatePicker placeholder="Ngày sinh" format="DD/MM/YYYY"
+                                                        disabled={isOldCustomer}/>
+                                        </Form.Item>
 
-                                    <Form.Item
-                                        {...restField}
-                                        name={[name, "birthday"]}
-                                        label="Ngày sinh"
-                                        fieldKey={[fieldKey, "birthday"]}
-                                        rules={[{required: true, message: "Vui lòng nhập ngày sinh!"}]}
-                                    >
-                                        <DatePicker placeholder="Ngày sinh" format="DD/MM/YYYY"/>
-                                    </Form.Item>
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, "phone"]}
+                                            label="Số điện thoại"
+                                            fieldKey={[fieldKey, "phone"]}
+                                            rules={[{required: true, message: "Vui lòng nhập số điện thoại!"}]}
+                                        >
+                                            <Input placeholder="Số điện thoại" disabled={isOldCustomer}/>
+                                        </Form.Item>
 
-                                    <Form.Item
-                                        {...restField}
-                                        name={[name, "phone"]}
-                                        label="Số điện thoại"
-                                        fieldKey={[fieldKey, "phone"]}
-                                        rules={[{required: true, message: "Vui lòng nhập số điện thoại!"}]}
-                                    >
-                                        <Input placeholder="Số điện thoại"/>
-                                    </Form.Item>
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, "idNumber"]}
+                                            label="CMND/CCCD"
+                                            fieldKey={[fieldKey, "idNumber"]}
+                                            // rules={[{ required: true, message: "Vui lòng nhập số CMND/CCCD!" }]}
+                                        >
+                                            <Input placeholder="CMND/CCCD" disabled={isOldCustomer}/>
+                                        </Form.Item>
 
-                                    <Form.Item
-                                        {...restField}
-                                        name={[name, "idNumber"]}
-                                        label="CMND/CCCD"
-                                        fieldKey={[fieldKey, "idNumber"]}
-                                        rules={[{required: true, message: "Vui lòng nhập số CMND/CCCD!"}]}
-                                    >
-                                        <Input placeholder="CMND/CCCD"/>
-                                    </Form.Item>
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, "idPlace"]}
+                                            label="Nơi cấp"
+                                            fieldKey={[fieldKey, "idPlace"]}
+                                            // rules={[{ required: true, message: "Vui lòng nhập nơi cấp!" }]}
+                                        >
+                                            <Input placeholder="Nơi cấp" disabled={isOldCustomer}/>
+                                        </Form.Item>
 
-                                    <Form.Item
-                                        {...restField}
-                                        name={[name, "idPlace"]}
-                                        label="Nơi cấp"
-                                        fieldKey={[fieldKey, "idPlace"]}
-                                        rules={[{required: true, message: "Vui lòng nhập nơi cấp!"}]}
-                                    >
-                                        <Input placeholder="Nơi cấp"/>
-                                    </Form.Item>
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, "idDate"]}
+                                            label="Ngày cấp"
+                                            fieldKey={[fieldKey, "idDate"]}
+                                            // rules={[{ required: true, message: "Vui lòng nhập ngày cấp!" }]}
+                                        >
+                                            <DatePicker placeholder="Ngày cấp" format="DD/MM/YYYY"
+                                                        disabled={isOldCustomer}/>
+                                        </Form.Item>
 
-                                    <Form.Item
-                                        {...restField}
-                                        name={[name, "idDate"]}
-                                        label="Ngày cấp"
-                                        fieldKey={[fieldKey, "idDate"]}
-                                        rules={[{required: true, message: "Vui lòng nhập ngày cấp!"}]}
-                                    >
-                                        <DatePicker placeholder="Ngày cấp" format="DD/MM/YYYY"/>
-                                    </Form.Item>
-
-                                    <Form.Item
-                                        {...restField}
-                                        name={[name, "address"]}
-                                        label="Địa chỉ"
-                                        fieldKey={[fieldKey, "address"]}
-                                        rules={[{required: true, message: "Vui lòng nhập địa chỉ!"}]}
-                                    >
-                                        <Input placeholder="Địa chỉ"/>
-                                    </Form.Item>
-                                </div>
-                            ))}
-
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, "address"]}
+                                            label="Địa chỉ"
+                                            fieldKey={[fieldKey, "address"]}
+                                            // rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
+                                        >
+                                            <Input placeholder="Địa chỉ" disabled={isOldCustomer}/>
+                                        </Form.Item>
+                                    </div>
+                                );
+                            })}
 
                             {/* Lựa chọn khách thuê cũ */}
                             <Form.Item label="Thêm khách thuê cũ">
                                 <Select
                                     placeholder="Thêm khách thuê cũ"
                                     onChange={(value) => {
-                                        // Tìm khách hàng trong danh sách cũ
                                         const selectedCustomer = existCustomers.find((customer) => customer.id === value);
                                         if (selectedCustomer) {
-                                            const customers = form.getFieldValue("customers") || []; // Lấy danh sách hiện tại từ Form.List
+                                            const customers = form.getFieldValue("customers") || [];
                                             const isExist = customers.some((customer) => customer.idNumber === selectedCustomer.idNumber);
 
                                             if (isExist) {
                                                 toast.warning("Khách hàng đã tồn tại trong danh sách.");
                                                 return;
                                             }
-                                            // Thêm khách thuê từ danh sách cũ vào Form.List
+
                                             const birthDay = selectedCustomer.birthday.split("/");
                                             const idDate = selectedCustomer.idDate.split("/");
                                             add({
+                                                id: selectedCustomer.id,
                                                 name: selectedCustomer.name,
                                                 phone: selectedCustomer.phone,
                                                 email: selectedCustomer.email,
@@ -291,8 +312,8 @@ const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
                                                 idDate: selectedCustomer.idDate
                                                     ? dayjs(`${idDate[2]}-${idDate[1]}-${idDate[0]}`)
                                                     : undefined,
+                                                isOldCustomer: true, // Đánh dấu là khách cũ
                                             });
-                                            // reset value của Select
                                             form.setFieldsValue({existCustomer: undefined});
                                         }
                                     }}
@@ -311,7 +332,7 @@ const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
                             <Form.Item>
                                 <Button
                                     type="dashed"
-                                    onClick={() => add()}
+                                    onClick={() => add({isOldCustomer: false})} // Thêm khách mới
                                     block
                                     icon={<PlusOutlined/>}
                                 >
@@ -321,7 +342,6 @@ const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
                         </>
                     )}
                 </Form.List>
-
             </Form>
         </Modal>
     );

@@ -18,7 +18,7 @@ export default function Services() {
     const queryClient = useQueryClient();
     const {filters, setFilters, handlePageChange, handleSearch, handleSort, handleFilterChange} = useTableFilters({
         page: 0,
-        size: 10,
+        size: 6,
         status: null,
         search: '',
         sort: null,

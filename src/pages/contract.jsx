@@ -1186,7 +1186,7 @@ export default function Contract() {
     const location = useLocation();
     const {filters, setFilters, handlePageChange, handleSearch, handleSort, handleFilterChange} = useTableFilters({
         page: 0,
-        size: 5,
+        size: 6,
         roomCode: '',
         search: '',
         sort: null,
@@ -1194,10 +1194,8 @@ export default function Contract() {
     });
 
     useEffect(() => {
-        const roomCode = new URLSearchParams(location.search).get('roomCode');
-        if (roomCode) {
-            setFilters({...filters, roomCode});
-        }
+        const roomCode = new URLSearchParams(location.search).get('roomCode') || '';
+        setFilters({...filters, roomCode});
     }, [location.search]);
 
     // Destructure filters and pass them to the query

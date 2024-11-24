@@ -1,5 +1,5 @@
 import {NavLink} from "react-router-dom";
-import {FiFileText, FiHome} from "react-icons/fi"; // Feather Icons
+import {FiFileText, FiHome, FiUser} from "react-icons/fi"; // Feather Icons
 import {MdReceipt, MdRoomService, MdSettings} from "react-icons/md";
 
 export default function Navbar() {
@@ -13,6 +13,11 @@ export default function Navbar() {
             to: "/contracts",
             label: "Hợp Đồng",
             icon: <FiFileText className="nav-link-icon" size={18}/>,
+        },
+        {
+            to: "/customers",
+            label: "Khách Hàng",
+            icon: <FiUser className="nav-link-icon" size={18}/>,
         },
         {
             to: "/invoices",

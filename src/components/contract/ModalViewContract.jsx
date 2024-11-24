@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 const ModalViewContract = ({visible, onClose, contract}) => {
     if (!contract) return null;
 
-    const {room, owner, price, deposit, status, note, numberOfPeople, members} = contract;
+    const {room, owner, price, deposit, status, note, numberOfPeople, members, checkinElectricNumber, checkinWaterNumber} = contract;
     const branch = room?.branch;
 
     console.log(contract);
@@ -34,6 +34,8 @@ const ModalViewContract = ({visible, onClose, contract}) => {
                 <Descriptions.Item label="Tiền cọc">
                     {deposit?.toLocaleString()} ₫
                 </Descriptions.Item>
+                <Descriptions.Item label="Chỉ số điện ban đầu">{checkinElectricNumber || "Không có"}</Descriptions.Item>
+                <Descriptions.Item label="Chỉ số nước ban đầu">{checkinWaterNumber || "Không có"}</Descriptions.Item>
                 <Descriptions.Item label="Ghi chú">{note || "Không có"}</Descriptions.Item>
             </Descriptions>
 

@@ -2,7 +2,7 @@ import React, {useMemo} from "react";
 import SortableTable from "../SortableTable.jsx";
 import {Button, Dropdown, Menu} from "antd";
 import {DeleteOutlined, EyeOutlined, FileTextOutlined, LogoutOutlined, MoreOutlined} from "@ant-design/icons";
-import {MdOutlineRememberMe} from "react-icons/md";
+import {MdDownload, MdOutlineRememberMe} from "react-icons/md";
 
 const ContractTable = ({
                            datas,
@@ -63,10 +63,10 @@ const ContractTable = ({
                         </Menu.Item>
                         <Menu.Item
                             key={"print" + row.original.id}
-                            icon={<FileTextOutlined style={{color: '#1890ff'}}/>}
+                            icon={<MdDownload style={{color: '#1890ff'}}/>}
                             onClick={() => onPrint(row.original.id)}
                         >
-                            In hợp đồng
+                            Tải hợp đồng
                         </Menu.Item>
                         <Menu.Divider/>
                         <Menu.Item
