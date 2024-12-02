@@ -10,4 +10,7 @@ export default class ApiUrl {
     static crudCustomer = `${ApiUrl.baseUrl}/api/v1/customers`;
     static customerImage = `${ApiUrl.baseUrl}/api/v1/customer-images`;
     static fileUrl = `${ApiUrl.imageUrl}/v1/file`;
+    static forgotPassword = `${ApiUrl.baseUrl}/api/v1/auth/forgot-password`;
+    static verifyCode = `${ApiUrl.baseUrl}/api/v1/auth/verify-code`;
+    static resetPassword = `${ApiUrl.baseUrl}/api/v1/auth/reset-password`;
 }
