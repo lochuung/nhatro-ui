@@ -15,7 +15,6 @@ import CustomerTable from "../components/customer/CustomerTable.jsx";
 import CustomerForm from "../components/customer/CustomerForm.jsx";
 import ModalViewCustomer from "../components/customer/ModalViewCustomer.jsx";
 import CustomerImageServices from "../services/CustomerImageServices.js";
-import ApiUrl from "../utils/api-url.js";
 
 
 const Customer = () => {

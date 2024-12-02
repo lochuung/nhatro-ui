@@ -79,7 +79,19 @@ export default function Rooms() {
             month: values.split('/')[0],
             year: values.split('/')[1]
         }
-        window.open(InvoiceServices.printInvoices(data), '_blank');
+        const token = localStorage.getItem('accessToken'); // Retrieve the JWT token from local storage
+        const url = InvoiceServices.printInvoices(data);
+        const printWindow = window.open(url, '_blank');
+    
+        // Add the JWT token to the request headers
+        printWindow.onload = () => {
+            printWindow.fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+        };
     }
 
     let handleCheckin = async (values) => {

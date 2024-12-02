@@ -1,5 +1,5 @@
 import React from "react";
-import {Modal, Button, Table, Descriptions, Image} from "antd";
+import {Button, Descriptions, Image, Modal, Table} from "antd";
 import ApiUrl from "../../utils/api-url.js";
 
 const ModalViewCustomer = ({

@@ -1220,8 +1220,20 @@ export default function Contract() {
     ]
 
     const onPrint = (id) => {
-        window.open(ContractServices.getPrintUrl(id), "_blank");
-    }
+        const token = localStorage.getItem('accessToken');
+        const url = ContractServices.getPrintUrl(id);
+        const printWindow = window.open(url, "_blank");
+    
+        // Add the JWT token to the request headers
+        printWindow.onload = () => {
+            printWindow.fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+        };
+    };
 
     const navigate = useNavigate();
 
@@ -1317,7 +1329,7 @@ export default function Contract() {
                                 <ContractTable
                                     datas={contracts}
                                     openRoomForm={formModal.openModal}
-                                    openDeleteConfirm={deleteModal.openModal}
+                                    // openDelete={deleteModal.openModal}
                                     onSort={handleSort}
                                     currentSort={sort}
                                     onPrint={onPrint}
@@ -1348,11 +1360,11 @@ export default function Contract() {
                 onCancel={formModal.closeModal}
             />
 
-            <DeleteModal
+            {/* <DeleteModal
                 visible={deleteModal.isOpen}
                 onConfirm={() => deleteMutation.mutate(deleteModal.selectedData)}
                 onCancel={deleteModal.closeModal}
-            />
+            /> */}
 
             <ModalViewContract
                 visible={viewModal.isOpen}
