@@ -218,7 +218,7 @@ const CustomerForm = ({visible, isEditMode, customer, onSubmit, onCancel}) => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Ng��n hàng"
+                        label="Ngân hàng"
                         name="bankName"
                     >
                         <Input placeholder="Nhập tên ngân hàng"/>
