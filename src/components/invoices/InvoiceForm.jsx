@@ -17,6 +17,7 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
     const [contracts, setContracts] = useState([]);
     const [services, setServices] = useState([]);
     const [settings, setSettings] = useState({});
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         // Fetch contracts and services
@@ -74,6 +75,7 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
 
     const handleOk = async () => {
         try {
+            setLoading(true);
             const values = await form.validateFields();
             const {roomOption, stayDays, services, ...filteredValues} = values;
 
@@ -95,9 +97,11 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
             };
 
             delete formattedValues.dateRange; // Xóa `dateRange` khỏi dữ liệu gửi đi
-            onSubmit(formattedValues);
+            await onSubmit(formattedValues);
         } catch (error) {
             console.log('Validation Failed:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -149,14 +153,19 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
             title={isEditMode ? 'Chỉnh sửa hóa đơn' : 'Thêm mới hóa đơn'}
             visible={visible}
             onOk={handleOk}
-            onCancel={onCancel}
+            onCancel={() => !loading && onCancel()}
             okText={isEditMode ? 'Cập nhật' : 'Thêm mới'}
             cancelText="Hủy"
+            okButtonProps={{ loading, disabled: loading }}
+            cancelButtonProps={{ disabled: loading }}
+            closable={!loading}
+            maskClosable={!loading}
         >
             <Form form={form} layout="vertical"
                   onValuesChange={() => {
-                      calculateTotalAmount(); // Gọi hàm tính tổng tiền mỗi khi form thay đổi
+                      calculateTotalAmount(); // Gọi hàm tính tổng ti��n mỗi khi form thay đổi
                   }}
+                  disabled={loading}
             >
                 <Form.Item
                     label="ID Hợp đồng"

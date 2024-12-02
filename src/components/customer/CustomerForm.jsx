@@ -14,6 +14,7 @@ const CustomerForm = ({visible, isEditMode, customer, onSubmit, onCancel}) => {
     const [previewVisible, setPreviewVisible] = useState(false); // Hiển thị Modal xem trước
     const [previewImage, setPreviewImage] = useState(''); // URL ảnh xem trước
     const [previewTitle, setPreviewTitle] = useState(''); // Tiêu đề ảnh xem trước
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (visible) {
@@ -48,8 +49,9 @@ const CustomerForm = ({visible, isEditMode, customer, onSubmit, onCancel}) => {
 
     const handleOk = async () => {
         try {
+            setLoading(true);
             const values = await form.validateFields();
-            onSubmit({
+            await onSubmit({
                 ...values,
                 description, // Include description in submission
                 birthday: values.birthday ? values.birthday.format("DD/MM/YYYY") : null,
@@ -57,6 +59,8 @@ const CustomerForm = ({visible, isEditMode, customer, onSubmit, onCancel}) => {
             });
         } catch (error) {
             console.log('Validation Failed:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -106,11 +110,20 @@ const CustomerForm = ({visible, isEditMode, customer, onSubmit, onCancel}) => {
                 title={isEditMode ? 'Chỉnh sửa khách hàng' : 'Thêm mới khách hàng'}
                 visible={visible}
                 onOk={handleOk}
-                onCancel={onCancel}
+                onCancel={() => !loading && onCancel()}
                 okText={isEditMode ? 'Cập nhật' : 'Thêm mới'}
                 cancelText="Hủy"
+                okButtonProps={{ loading, disabled: loading }}
+                cancelButtonProps={{ disabled: loading }}
+                closable={!loading}
+                maskClosable={!loading}
             >
-                <Form form={form} layout="vertical" initialValues={customer}>
+                <Form 
+                    form={form} 
+                    layout="vertical" 
+                    initialValues={customer}
+                    disabled={loading}
+                >
                     <Form.Item
                         label="Họ và Tên"
                         name="name"

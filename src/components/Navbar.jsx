@@ -1,9 +1,14 @@
 import {NavLink} from "react-router-dom";
-import {FiFileText, FiHome, FiUser} from "react-icons/fi"; // Feather Icons
-import {MdReceipt, MdRoomService, MdSettings} from "react-icons/md";
+import {FiFileText, FiHome, FiUser} from "react-icons/fi";
+import {MdReceipt, MdRoomService, MdSettings, MdDashboard} from "react-icons/md"; // Add MdDashboard
 
 export default function Navbar() {
     const navItems = [
+        {
+            to: "/",
+            label: "Tổng Quan",
+            icon: <MdDashboard className="nav-link-icon" size={18}/>,
+        },
         {
             to: "/rooms",
             label: "Phòng",

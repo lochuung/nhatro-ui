@@ -13,4 +13,10 @@ export default class ApiUrl {
     static forgotPassword = `${ApiUrl.baseUrl}/api/v1/auth/forgot-password`;
     static verifyCode = `${ApiUrl.baseUrl}/api/v1/auth/verify-code`;
     static resetPassword = `${ApiUrl.baseUrl}/api/v1/auth/reset-password`;
+    static dashboard = {
+        stats: `${ApiUrl.baseUrl}/api/v1/dashboard/stats`,
+        income: `${ApiUrl.baseUrl}/api/v1/dashboard/income`,
+        occupancy: `${ApiUrl.baseUrl}/api/v1/dashboard/occupancy`,
+        invoices: `${ApiUrl.baseUrl}/api/v1/dashboard/invoices`
+    };
 }

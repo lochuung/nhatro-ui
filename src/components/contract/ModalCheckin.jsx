@@ -12,9 +12,11 @@ const {Option} = Select;
 
 const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
 
     const handleOk = async () => {
         try {
+            setLoading(true);
             const values = await form.validateFields();
             const formattedValues = {
                 ...values,
@@ -30,14 +32,16 @@ const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
                 };
             });
             try {
-                onSubmit(formattedValues);
+                await onSubmit(formattedValues);
                 // form.resetFields();
             } catch (error) {
-                console.error("Failed to create contract:", error);
-                toast.error(error.response.data.description);
+                // console.error("Failed to create contract:", error);
+                // toast.error(error.response.data.description);
             }
         } catch (error) {
             console.error("Validation Failed:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -68,17 +72,21 @@ const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
             title="Thuê phòng"
             visible={visible}
             onCancel={() => {
-                form.resetFields(); // Reset form khi đóng modal
-                onClose();
+                if (!loading) {
+                    form.resetFields(); // Reset form khi đóng modal
+                    onClose();
+                }
             }}
             footer={[
-                <Button key="cancel" onClick={onClose}>
+                <Button key="cancel" onClick={onClose} disabled={loading}>
                     Hủy
                 </Button>,
-                <Button key="submit" type="primary" onClick={handleOk}>
+                <Button key="submit" type="primary" onClick={handleOk} loading={loading}>
                     Xác nhận
                 </Button>,
             ]}
+            closable={!loading}
+            maskClosable={!loading}
         >
             <Form form={form} layout="vertical">
                 {/* Ngày bắt đầu */}
@@ -242,7 +250,7 @@ const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
                                             name={[name, "idNumber"]}
                                             label="CMND/CCCD"
                                             fieldKey={[fieldKey, "idNumber"]}
-                                            // rules={[{ required: true, message: "Vui lòng nhập số CMND/CCCD!" }]}
+                                            rules={[{ required: true, message: "Vui lòng nhập số CMND/CCCD!" }]}
                                         >
                                             <Input placeholder="CMND/CCCD" disabled={isOldCustomer}/>
                                         </Form.Item>

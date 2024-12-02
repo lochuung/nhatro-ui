@@ -11,6 +11,7 @@ const Service = lazy(() => import('../pages/services.jsx'));
 const Setting = lazy(() => import('../pages/settings.jsx'));
 const Invoice = lazy(() => import('../pages/invoice.jsx'));
 const Customer = lazy(() => import('../pages/customer.jsx'));
+const Dashboard = lazy(() => import('../pages/dashboard.jsx'));
 
 const routes = [
     {
@@ -20,13 +21,14 @@ const routes = [
             </PrivateRoute>
         ),
         children: [
-            {path: '/', element: <Rooms/>},
+            {path: '/', element: <Dashboard/>},
             {path: '/rooms', element: <Rooms/>},
             {path: '/contracts', element: <Contract/>},
             {path: '/invoices', element: <Invoice/>},
             {path: '/services', element: <Service/>},
             {path: '/settings', element: <Setting></Setting>},
             {path: 'customers', element: <Customer/>},
+            {path: '/dashboard', element: <Dashboard/>},
         ],
     },
     {

@@ -7,13 +7,17 @@ import CurrencyInput from "../CurrencyInput.jsx";
 const ServiceFeeForm = ({visible, isEditMode, currentServiceFee, onSubmit, onCancel}) => {
     const [form] = Form.useForm();
     const [description, setDescription] = useState(currentServiceFee?.description || '');
+    const [loading, setLoading] = useState(false);
 
     const handleOk = async () => {
         try {
+            setLoading(true);
             const values = await form.validateFields();
-            onSubmit({...values, description});
+            await onSubmit({...values, description});
         } catch (error) {
             console.log('Validation Failed:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -22,11 +26,20 @@ const ServiceFeeForm = ({visible, isEditMode, currentServiceFee, onSubmit, onCan
             title={isEditMode ? 'Chỉnh sửa dịch vụ' : 'Thêm mới dịch vụ'}
             visible={visible}
             onOk={handleOk}
-            onCancel={onCancel}
+            onCancel={() => !loading && onCancel()}
             okText={isEditMode ? 'Cập nhật' : 'Thêm mới'}
             cancelText="Hủy"
+            okButtonProps={{ loading, disabled: loading }}
+            cancelButtonProps={{ disabled: loading }}
+            closable={!loading}
+            maskClosable={!loading}
         >
-            <Form form={form} layout="vertical" initialValues={currentServiceFee}>
+            <Form 
+                form={form} 
+                layout="vertical" 
+                initialValues={currentServiceFee}
+                disabled={loading}
+            >
                 <Form.Item
                     label="Tên dịch vụ"
                     name="name"
