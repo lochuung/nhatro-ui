@@ -5,6 +5,7 @@ import Button from 'react-bootstrap-button-loader';
 import {toast} from 'react-toastify';
 import {Navigate, useNavigate} from "react-router";
 import {FaEye, FaEyeSlash} from "react-icons/fa";
+import { Link } from 'react-router-dom';
 
 export default function Login() {
     useEffect(() => {
@@ -94,12 +95,12 @@ export default function Login() {
                                                 </div>
                                                 <div className="col-auto">
                                                     {/* Help text */}
-                                                    <a
-                                                        href="#"
+                                                    <Link
+                                                        to="/forgot-password"
                                                         className="form-text small text-muted link-primary"
                                                     >
                                                         Quên mật khẩu
-                                                    </a>
+                                                    </Link>
                                                 </div>
                                             </div>
                                             {" "}

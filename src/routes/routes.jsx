@@ -2,6 +2,7 @@ import {lazy} from 'react';
 import PrivateRoute from '../components/PrivateRoute.jsx';
 import App from '../App.jsx';
 import Login from '../pages/Auth/Login.jsx';
+import ForgotPassword from '../pages/Auth/ForgotPassword.jsx';
 
 // Lazy-loaded components
 const Rooms = lazy(() => import('../pages/rooms.jsx'));
@@ -31,6 +32,10 @@ const routes = [
     {
         path: '/login',
         element: <Login/>,
+    },
+    {
+        path: '/forgot-password',
+        element: <ForgotPassword/>,
     },
 ];
 

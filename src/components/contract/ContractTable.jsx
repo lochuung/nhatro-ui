@@ -84,13 +84,15 @@ const ContractTable = ({
                         >
                             Chỉnh sửa thành viên
                         </Menu.Item>
-                        <Menu.Item
+                        {/* <Menu.Item
                             key={"delete" + row.original.id}
                             icon={<DeleteOutlined style={{color: '#ff4d4f'}}/>}
-                            onClick={() => openDelete(row.original.id)}
+                            onClick={() => {
+                                openDelete(row.original.id)
+                            }}
                         >
                             Xóa
-                        </Menu.Item>
+                        </Menu.Item> */}
                     </Menu>
                 );
 

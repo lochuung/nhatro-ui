@@ -15,4 +15,11 @@ export default class AuthServices {
         toast.error('Phiên đăng nhập hết hạn!');
         AuthServices.logout();
     }
+
+    static forgotPassword = (email) => api.post(ApiUrl.forgotPassword, { email });
+
+    static verifyCode = (email, verifyCode) => api.post(ApiUrl.verifyCode, { email, verifyCode });
+
+    static resetPassword = (email, verifyCode, newPassword) => 
+        api.post(ApiUrl.resetPassword, { email, verifyCode, newPassword });
 }
