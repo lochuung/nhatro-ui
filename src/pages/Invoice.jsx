@@ -17,6 +17,7 @@ import InvoiceForm from "../components/invoices/InvoiceForm.jsx";
 import {useLocation} from "react-router";
 import ModalViewInvoice from "../components/invoices/ModalViewInvoice.jsx";
 import dayjs from '../utils/locale-custom.js'
+import { downloadFileWithAuth } from '../utils/printUtils';
 
 const Invoice = (props) => {
     // const [showModalAddInvoice, setShowModalAddInvoice] = useState(false);
@@ -107,8 +108,8 @@ const Invoice = (props) => {
     }, []);
 
     const onPrint = (id) => {
-        // open print dialog
-        window.open(InvoiceServices.getPrintUrl(id), "_blank");
+        const url = InvoiceServices.getPrintUrl(id);
+        downloadFileWithAuth(url, `invoice-${id}.pdf`);
     };
 
 

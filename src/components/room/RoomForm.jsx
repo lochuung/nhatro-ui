@@ -8,6 +8,7 @@ const { Option } = Select;
 
 const RoomForm = ({ visible, isEditMode, currentRoom, onSubmit, onCancel }) => {
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
     const [description, setDescription] = useState('');  // State for rich text description
 
     useEffect(() => {
@@ -33,10 +34,13 @@ const RoomForm = ({ visible, isEditMode, currentRoom, onSubmit, onCancel }) => {
 
     const handleOk = async () => {
         try {
+            setLoading(true);
             const values = await form.validateFields();
-            onSubmit({ ...values, description });  // Include description in the form submission
+            await onSubmit({ ...values, description });  // Include description in the form submission
         } catch (error) {
             console.log('Validation Failed:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -45,11 +49,21 @@ const RoomForm = ({ visible, isEditMode, currentRoom, onSubmit, onCancel }) => {
             title={isEditMode ? 'Chỉnh sửa phòng' : 'Thêm mới phòng'}
             visible={visible}
             onOk={handleOk}
-            onCancel={onCancel}
+            onCancel={() => !loading && onCancel()}
             okText={isEditMode ? 'Cập nhật' : 'Thêm mới'}
             cancelText="Hủy"
+            confirmLoading={loading}
+            okButtonProps={{ disabled: loading }}
+            cancelButtonProps={{ disabled: loading }}
+            closable={!loading}
+            maskClosable={!loading}
         >
-            <Form form={form} layout="vertical" initialValues={currentRoom}>
+            <Form 
+                form={form} 
+                layout="vertical" 
+                initialValues={currentRoom}
+                disabled={loading}
+            >
                 <Form.Item
                     label="Tên phòng"
                     name="name"
