@@ -40,4 +40,8 @@ export default class InvoiceServices {
     deleteInvoice = (id) => {
         return api.delete(`${ApiUrl.crudInvoice}/${id}`);
     };
+
+    static updatePayment = (id, paidAmount) => {
+        return api.put(`${ApiUrl.crudInvoice}/payment/${id}`, { paidAmount });
+    };
 }

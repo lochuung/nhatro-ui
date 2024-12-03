@@ -112,6 +112,10 @@ const Invoice = (props) => {
         downloadFileWithAuth(url, `invoice-${id}.pdf`);
     };
 
+    const handlePaymentUpdate = () => {
+        // Refetch the invoices data
+        queryClient.invalidateQueries(['invoices', filters]);
+    };
 
     return (
         <div className="container-fluid">
@@ -209,6 +213,7 @@ const Invoice = (props) => {
                                     onView={viewModal.openModal}
                                     onSort={handleSort}
                                     currentSort={sort}
+                                    onUpdate={handlePaymentUpdate}
                                 />
                             )}
                         </div>

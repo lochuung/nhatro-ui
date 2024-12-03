@@ -22,9 +22,12 @@ api.interceptors.response.use(
     (error) => {
         console.log(error);
         if (error.response.status === 401) {
-            toast.error('Vui lòng đăng nhập để tiếp tục');
             localStorage.removeItem("accessToken");
-            return redirect("/login");
+            if (window.location.pathname !== "/login") {
+                toast.error('Vui lòng đăng nhập để tiếp tục');
+                return window.location.href = "/login";
+            }
+            return Promise.reject(error);
         } else {
             toast.error(error.response.data.description);
         }

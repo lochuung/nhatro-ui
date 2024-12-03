@@ -1,23 +1,26 @@
-import {Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space} from 'antd';
-import {MinusCircleOutlined, PlusOutlined} from '@ant-design/icons';
-import {useEffect, useState} from 'react';
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space, Radio } from 'antd';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
 import ContractServices from '../../services/ContractServices.js';
 import ServiceServices from '../../services/ServiceServices.js';
 import SettingServices from "../../services/SettingServices.js";
-import {SettingConstants} from "../../constant/SettingConstants.js";
+import { SettingConstants } from "../../constant/SettingConstants.js";
 import CurrencyInput from "../CurrencyInput.jsx";
 import dayjs from "dayjs";
 
-const {Option} = Select;
+const { Option } = Select;
 
-const {RangePicker} = DatePicker;
+const { RangePicker } = DatePicker;
 
-const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) => {
+const InvoiceForm = ({ visible, isEditMode, currentInvoice, onSubmit, onCancel }) => {
     const [form] = Form.useForm();
     const [contracts, setContracts] = useState([]);
     const [services, setServices] = useState([]);
     const [settings, setSettings] = useState({});
     const [loading, setLoading] = useState(false);
+    const [paymentOperation, setPaymentOperation] = useState('set'); // 'add', 'subtract', 'set'
+    const [adjustAmount, setAdjustAmount] = useState(0);
+    const [originalPaidAmount, setOriginalPaidAmount] = useState(0);
 
     useEffect(() => {
         // Fetch contracts and services
@@ -39,6 +42,9 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
     useEffect(() => {
         if (visible) {
             if (isEditMode && currentInvoice) {
+                const paidAmount = currentInvoice.paidAmount || 0;
+                setOriginalPaidAmount(paidAmount);
+                setAdjustAmount(0);
                 form.setFieldsValue({
                     ...currentInvoice,
                     contractId: currentInvoice.contract.id,
@@ -49,6 +55,8 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                     ]
                 });
             } else {
+                setOriginalPaidAmount(0);
+                setAdjustAmount(0);
                 form.resetFields();
                 form.setFieldsValue({
                     contractId: '',
@@ -77,7 +85,7 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
         try {
             setLoading(true);
             const values = await form.validateFields();
-            const {roomOption, stayDays, services, ...filteredValues} = values;
+            const { roomOption, stayDays, services, ...filteredValues } = values;
 
             const [startDate, endDate] = values.dateRange || [];
             let start = startDate ? dayjs(startDate) : null;
@@ -148,6 +156,89 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
         form.setFieldValue('totalAmount', Math.max(total, 0)); // Đảm bảo không âm
     };
 
+    const handlePaymentChange = (amount, operation) => {
+        if (loading) return; // Prevent changes while loading
+        
+        if (operation === 'set') {
+            form.setFieldsValue({ paidAmount: amount });
+            setAdjustAmount(0);
+        } else {
+            setAdjustAmount(amount);
+            let newAmount = originalPaidAmount;
+            switch (operation) {
+                case 'add':
+                    newAmount = originalPaidAmount + amount;
+                    break;
+                case 'subtract':
+                    newAmount = Math.max(0, originalPaidAmount - amount);
+                    break;
+                default:
+                    break;
+            }
+            form.setFieldsValue({ paidAmount: newAmount });
+        }
+        calculateTotalAmount();
+    };
+
+    const renderPaymentSection = () => (
+        <Form.Item label="Thao tác thanh toán">
+            <Space direction="vertical" style={{ width: '100%' }}>
+                <Radio.Group
+                    value={paymentOperation}
+                    onChange={(e) => {
+                        setPaymentOperation(e.target.value);
+                        setAdjustAmount(0);
+                        form.setFieldsValue({ paidAmount: originalPaidAmount });
+                        calculateTotalAmount();
+                    }}
+                >
+                    <Radio value="add">Thêm tiền</Radio>
+                    <Radio value="subtract">Trừ tiền</Radio>
+                    <Radio value="set">Đặt số tiền</Radio>
+                </Radio.Group>
+
+                {paymentOperation !== 'set' ? (
+                    <Space direction="vertical" style={{ width: '100%' }}>
+                        <Form.Item
+                            label={paymentOperation === 'add' ? 'Số tiền thêm' : 'Số tiền trừ'}
+                            style={{ marginBottom: 8 }}
+                        >
+                            <CurrencyInput
+                                value={adjustAmount}
+                                onChange={(value) => handlePaymentChange(value, paymentOperation)}
+                                placeholder={paymentOperation === 'add' ? 'Nhập số tiền thêm' : 'Nhập số tiền trừ'}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label="Số tiền thanh toán"
+                            name="paidAmount"
+                            rules={[
+                                { required: true, message: 'Số tiền thanh toán phải >= 0!' },
+                                { type: 'number', min: 0, message: 'Số tiền phải lớn hơn 0!' }
+                            ]}
+                        >
+                            <CurrencyInput disabled />
+                        </Form.Item>
+                    </Space>
+                ) : (
+                    <Form.Item
+                        name="paidAmount"
+                        label="Số tiền thanh toán"
+                        rules={[
+                            { required: true, message: 'Số tiền thanh toán phải >= 0!' },
+                            { type: 'number', min: 0, message: 'Số tiền phải lớn hơn 0!' }
+                        ]}
+                    >
+                        <CurrencyInput
+                            placeholder="Nhập số tiền thanh toán"
+                            onChange={(value) => handlePaymentChange(value, 'set')}
+                        />
+                    </Form.Item>
+                )}
+            </Space>
+        </Form.Item>
+    );
+
     return (
         <Modal
             title={isEditMode ? 'Chỉnh sửa hóa đơn' : 'Thêm mới hóa đơn'}
@@ -162,15 +253,15 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
             maskClosable={!loading}
         >
             <Form form={form} layout="vertical"
-                  onValuesChange={() => {
-                      calculateTotalAmount(); // Gọi hàm tính tổng ti��n mỗi khi form thay đổi
-                  }}
-                  disabled={loading}
+                onValuesChange={() => {
+                    calculateTotalAmount(); // Gọi hàm tính tổng tiền mỗi khi form thay đổi
+                }}
+                disabled={loading}
             >
                 <Form.Item
                     label="ID Hợp đồng"
                     name="contractId"
-                    rules={[{required: true, message: 'Vui lòng chọn hợp đồng!'}]}
+                    rules={[{ required: true, message: 'Vui lòng chọn hợp đồng!' }]}
                 >
                     <Select
                         placeholder="Chọn hợp đồng"
@@ -198,7 +289,7 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                 <Form.Item
                     label="Loại hóa đơn"
                     name="type"
-                    rules={[{required: true, message: 'Vui lòng chọn loại hóa đơn!'}]}
+                    rules={[{ required: true, message: 'Vui lòng chọn loại hóa đơn!' }]}
                 >
                     <Select placeholder="Chọn loại hóa đơn">
                         <Option value="MONTHLY">MONTHLY</Option>
@@ -210,14 +301,14 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                     label="Chỉ số điện cũ"
                     name="oldElectricityNumber"
                     rules={[
-                        {required: true, message: 'Vui lòng nhập chỉ số điện cũ!'},
-                        {type: 'number', min: 0, message: 'Số điện cũ phải >= 0!'},
+                        { required: true, message: 'Vui lòng nhập chỉ số điện cũ!' },
+                        { type: 'number', min: 0, message: 'Số điện cũ phải >= 0!' },
                     ]}
                 >
                     <InputNumber
                         placeholder="Nhập chỉ số điện cũ"
                         min={0} // Không cho phép nhập số âm
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         parser={(value) => Number(value.replace(/[^0-9]/g, ''))} // Đảm bảo luôn là số
                     />
                 </Form.Item>
@@ -226,14 +317,14 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                     label="Chỉ số điện mới"
                     name="newElectricityNumber"
                     rules={[
-                        {required: true, message: 'Vui lòng nhập chỉ số điện mới!'},
-                        {type: 'number', min: 0, message: 'Số điện mới phải >= 0!'},
+                        { required: true, message: 'Vui lòng nhập chỉ số điện mới!' },
+                        { type: 'number', min: 0, message: 'Số điện mới phải >= 0!' },
                     ]}
                 >
                     <InputNumber
                         placeholder="Nhập chỉ số điện mới"
                         min={0}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         parser={(value) => Number(value.replace(/[^0-9]/g, ''))}
                     />
                 </Form.Item>
@@ -242,14 +333,14 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                     label="Chỉ số nước cũ"
                     name="oldWaterNumber"
                     rules={[
-                        {required: true, message: 'Vui lòng nhập chỉ số nước cũ!'},
-                        {type: 'number', min: 0, message: 'Số nước cũ phải >= 0!'},
+                        { required: true, message: 'Vui lòng nhập chỉ số nước cũ!' },
+                        { type: 'number', min: 0, message: 'Số nước cũ phải >= 0!' },
                     ]}
                 >
                     <InputNumber
                         placeholder="Nhập chỉ số nước cũ"
                         min={0}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         parser={(value) => Number(value.replace(/[^0-9]/g, ''))}
                     />
                 </Form.Item>
@@ -258,14 +349,14 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                     label="Chỉ số nước mới"
                     name="newWaterNumber"
                     rules={[
-                        {required: true, message: 'Vui lòng nhập chỉ số nước mới!'},
-                        {type: 'number', min: 0, message: 'Số nước mới phải >= 0!'},
+                        { required: true, message: 'Vui lòng nhập chỉ số nước mới!' },
+                        { type: 'number', min: 0, message: 'Số nước mới phải >= 0!' },
                     ]}
                 >
                     <InputNumber
                         placeholder="Nhập chỉ số nước mới"
                         min={0}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         parser={(value) => Number(value.replace(/[^0-9]/g, ''))}
                     />
                 </Form.Item>
@@ -274,33 +365,25 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                 <Form.Item
                     label="Đơn giá điện"
                     name="electricityUnitPrice"
-                    rules={[{required: true, message: 'Đơn giá điện phải >= 0!'}]}
+                    rules={[{ required: true, message: 'Đơn giá điện phải >= 0!' }]}
                 >
-                    <CurrencyInput placeholder="Nhập đơn giá điện"/>
+                    <CurrencyInput placeholder="Nhập đơn giá điện" />
                 </Form.Item>
 
                 <Form.Item
                     label="Đơn giá nước"
                     name="waterUnitPrice"
-                    rules={[{required: true, message: 'Đơn giá nước phải >= 0!'}]}
+                    rules={[{ required: true, message: 'Đơn giá nước phải >= 0!' }]}
                 >
-                    <CurrencyInput placeholder="Nhập đơn giá nước"/>
-                </Form.Item>
-
-                <Form.Item
-                    label="Số tiền đã thanh toán"
-                    name="paidAmount"
-                    rules={[{required: true, message: 'Số tiền thanh toán phải >= 0!'}]}
-                >
-                    <CurrencyInput placeholder="Nhập số tiền đã thanh toán"/>
+                    <CurrencyInput placeholder="Nhập đơn giá nước" />
                 </Form.Item>
 
                 <Form.Item
                     label="Giảm giá"
                     name="discount"
-                    rules={[{required: true, message: 'Giảm giá phải >= 0!'}]}
+                    rules={[{ required: true, message: 'Giảm giá phải >= 0!' }]}
                 >
-                    <CurrencyInput placeholder="Nhập giảm giá"/>
+                    <CurrencyInput placeholder="Nhập giảm giá" />
                 </Form.Item>
 
                 <Form.Item label="Gợi ý tính tiền phòng" name="roomOption" initialValue="default">
@@ -330,18 +413,18 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
 
                 {/* Hiển thị trường Số ngày ở khi chọn "Tính theo ngày" */}
                 <Form.Item shouldUpdate={(prevValues, curValues) => prevValues.roomOption !== curValues.roomOption}>
-                    {({getFieldValue}) =>
+                    {({ getFieldValue }) =>
                         getFieldValue('roomOption') === 'custom' ? (
                             <Form.Item
                                 label="Số ngày ở"
                                 name="stayDays"
-                                rules={[{required: true, type: 'number', min: 1, message: 'Số ngày ở phải >= 1!'}]}
+                                rules={[{ required: true, type: 'number', min: 1, message: 'Số ngày ở phải >= 1!' }]}
                             >
                                 <InputNumber
                                     placeholder="Nhập số ngày ở"
                                     min={1}
                                     max={31}
-                                    style={{width: '100%'}}
+                                    style={{ width: '100%' }}
                                     onChange={(value) => {
                                         const selectedContractId = form.getFieldValue('contractId');
                                         const selectedContract = contracts.find((contract) => contract.id === selectedContractId);
@@ -366,15 +449,15 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                 <Form.Item
                     label="Tiền phòng"
                     name="roomAmount"
-                    rules={[{required: true, message: 'Tiền phòng phải >= 0!'}]}
+                    rules={[{ required: true, message: 'Tiền phòng phải >= 0!' }]}
                 >
-                    <CurrencyInput placeholder="Nhập tiền phòng"/>
+                    <CurrencyInput placeholder="Nhập tiền phòng" />
                 </Form.Item>
 
                 <Form.List name="services">
-                    {(fields, {add, remove}) => (
+                    {(fields, { add, remove }) => (
                         <>
-                            {fields.map(({key, name, fieldKey, ...restField}) => {
+                            {fields.map(({ key, name, fieldKey, ...restField }) => {
                                 // Lấy danh sách các dịch vụ đã được chọn
                                 const selectedServiceIds = form
                                     .getFieldValue('services')
@@ -382,12 +465,12 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                                     .map((service) => service?.id) || [];
 
                                 return (
-                                    <Space key={key} style={{display: 'flex', marginBottom: 8}} align="baseline">
+                                    <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
                                         <Form.Item
                                             {...restField}
                                             name={[name, 'id']}
                                             fieldKey={[fieldKey, 'id']}
-                                            rules={[{required: true, message: 'Vui lòng chọn dịch vụ!'}]}
+                                            rules={[{ required: true, message: 'Vui lòng chọn dịch vụ!' }]}
                                         >
                                             <Select
                                                 placeholder="Chọn dịch vụ"
@@ -428,9 +511,9 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                                             {...restField}
                                             name={[name, 'unitPrice']}
                                             fieldKey={[fieldKey, 'unitPrice']}
-                                            rules={[{required: true, message: 'Nhập đơn giá!'}]}
+                                            rules={[{ required: true, message: 'Nhập đơn giá!' }]}
                                         >
-                                            <CurrencyInput placeholder="Đơn giá" disabled/>
+                                            <CurrencyInput placeholder="Đơn giá" disabled />
                                         </Form.Item>
 
                                         <MinusCircleOutlined
@@ -438,7 +521,7 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                                                 const updatedServices = form
                                                     .getFieldValue('services')
                                                     .filter((_, index) => index !== name);
-                                                form.setFieldsValue({services: updatedServices});
+                                                form.setFieldsValue({ services: updatedServices });
 
                                                 // Tính lại tổng phí dịch vụ
                                                 calculateTotalServiceFee(updatedServices);
@@ -450,7 +533,7 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                                 );
                             })}
                             <Form.Item>
-                                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined/>}>
+                                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
                                     Thêm dịch vụ
                                 </Button>
                             </Form.Item>
@@ -463,7 +546,7 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                     label="Tổng phí dịch vụ"
                     name="totalServiceFee"
                 >
-                    <CurrencyInput placeholder="Tổng phí dịch vụ"/>
+                    <CurrencyInput placeholder="Tổng phí dịch vụ" />
                 </Form.Item>
 
                 <Form.Item
@@ -471,12 +554,12 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                     name="otherFee"
                 >
                     <CurrencyInput placeholder="Phí khác"
-                                   allowNegative={true} // Cho phép giá trị âm
+                        allowNegative={true} // Cho phép giá trị âm
                     />
                 </Form.Item>
 
                 <Form.Item label="Mô tả phí" name="otherFeeNote">
-                    <Input placeholder="Mô tả phí"/>
+                    <Input placeholder="Mô tả phí" />
                 </Form.Item>
 
                 {/* Tính tổng số tiền */}
@@ -484,28 +567,29 @@ const InvoiceForm = ({visible, isEditMode, currentInvoice, onSubmit, onCancel}) 
                     label="Tổng tiền"
                     name="totalAmount"
                 >
-                    <CurrencyInput placeholder="Tổng tiền" disabled/>
+                    <CurrencyInput placeholder="Tổng tiền" disabled />
                 </Form.Item>
 
+                {renderPaymentSection()}
 
                 <Form.Item
                     label="Chọn ngày"
                     name="dateRange"
-                    rules={[{required: true, message: "Vui lòng chọn khoảng ngày!"}]}
+                    rules={[{ required: true, message: "Vui lòng chọn khoảng ngày!" }]}
                 >
                     <RangePicker
                         placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
                         format="YYYY-MM-DD"
-                        style={{width: "100%"}}
+                        style={{ width: "100%" }}
                     />
                 </Form.Item>
 
                 <Form.Item label="Ghi chú" name="note">
-                    <Input.TextArea placeholder="Nhập ghi chú"/>
+                    <Input.TextArea placeholder="Nhập ghi chú" />
                 </Form.Item>
 
                 <Form.Item label="Ghi chú của quản trị viên" name="adminNote">
-                    <Input.TextArea placeholder="Nhập ghi chú của quản trị viên"/>
+                    <Input.TextArea placeholder="Nhập ghi chú của quản trị viên" />
                 </Form.Item>
             </Form>
         </Modal>
