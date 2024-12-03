@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space, Radio } from 'antd';
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space, Radio, message } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import ContractServices from '../../services/ContractServices.js';
@@ -21,6 +21,7 @@ const InvoiceForm = ({ visible, isEditMode, currentInvoice, onSubmit, onCancel }
     const [paymentOperation, setPaymentOperation] = useState('set'); // 'add', 'subtract', 'set'
     const [adjustAmount, setAdjustAmount] = useState(0);
     const [originalPaidAmount, setOriginalPaidAmount] = useState(0);
+    const [submitLoading, setSubmitLoading] = useState(false);
 
     useEffect(() => {
         // Fetch contracts and services
@@ -83,7 +84,7 @@ const InvoiceForm = ({ visible, isEditMode, currentInvoice, onSubmit, onCancel }
 
     const handleOk = async () => {
         try {
-            setLoading(true);
+            setSubmitLoading(true);
             const values = await form.validateFields();
             const { roomOption, stayDays, services, ...filteredValues } = values;
 
@@ -106,10 +107,13 @@ const InvoiceForm = ({ visible, isEditMode, currentInvoice, onSubmit, onCancel }
 
             delete formattedValues.dateRange; // Xóa `dateRange` khỏi dữ liệu gửi đi
             await onSubmit(formattedValues);
+            message.success(isEditMode ? 'Cập nhật hóa đơn thành công!' : 'Thêm mới hóa đơn thành công!');
+            form.resetFields();
         } catch (error) {
             console.log('Validation Failed:', error);
+            message.error('Có lỗi xảy ra. Vui lòng thử lại!');
         } finally {
-            setLoading(false);
+            setSubmitLoading(false);
         }
     };
 
@@ -244,19 +248,20 @@ const InvoiceForm = ({ visible, isEditMode, currentInvoice, onSubmit, onCancel }
             title={isEditMode ? 'Chỉnh sửa hóa đơn' : 'Thêm mới hóa đơn'}
             visible={visible}
             onOk={handleOk}
-            onCancel={() => !loading && onCancel()}
+            onCancel={() => !submitLoading && onCancel()}
             okText={isEditMode ? 'Cập nhật' : 'Thêm mới'}
             cancelText="Hủy"
-            okButtonProps={{ loading, disabled: loading }}
-            cancelButtonProps={{ disabled: loading }}
-            closable={!loading}
-            maskClosable={!loading}
+            okButtonProps={{ loading: submitLoading, disabled: loading || submitLoading }}
+            cancelButtonProps={{ disabled: loading || submitLoading }}
+            closable={!loading && !submitLoading}
+            maskClosable={!loading && !submitLoading}
+            confirmLoading={submitLoading}
         >
             <Form form={form} layout="vertical"
                 onValuesChange={() => {
                     calculateTotalAmount(); // Gọi hàm tính tổng tiền mỗi khi form thay đổi
                 }}
-                disabled={loading}
+                disabled={loading || submitLoading}
             >
                 <Form.Item
                     label="ID Hợp đồng"

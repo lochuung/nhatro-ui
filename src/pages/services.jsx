@@ -70,6 +70,8 @@ export default function Services() {
                                     services={services}
                                     openServiceFeeForm={serviceFormModal.openModal}
                                     openDeleteConfirm={deleteModal.openModal}
+                                    onSort={handleSort}
+                                    currentSort={sort}
                                 />
                             )}
                         </div>

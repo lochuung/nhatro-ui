@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, DatePicker, Form, Input, List, Modal, Radio, Select, Space, Tabs} from "antd";
+import {Button, DatePicker, Form, Input, List, Modal, Radio, Select, Space, Tabs, message} from "antd";
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
 import CustomerServices from "../../services/CustomerServices.js";
@@ -13,6 +13,7 @@ const ModalEditMembers = ({visible, onClose, contract, onAddMembers, onChangeOwn
     const [selectedLeaveMember, setSelectedLeaveMember] = useState(null); // Thành viên rời phòng
     const [checkoutDate, setCheckoutDate] = useState(null); // Ngày rời phòng
     const [members, setMembers] = useState(contract?.members || []);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         form.resetFields();
@@ -22,26 +23,49 @@ const ModalEditMembers = ({visible, onClose, contract, onAddMembers, onChangeOwn
 
     const contractId = contract?.id;
 
-    const handleAddCustomer = (values) => {
-        if (!values.customers || values.customers.length === 0) {
-            toast.warning("Vui lòng chọn ít nhất một khách hàng.");
-            return;
+    const handleAddCustomer = async (values) => {
+        try {
+            setLoading(true);
+            if (!values.customers || values.customers.length === 0) {
+                toast.warning("Vui lòng chọn ít nhất một khách hàng.");
+                return;
+            }
+
+            await onAddMembers({
+                customers: existCustomers.filter(v => values.customers.some(v2 => v2.phone === v.phone)),
+                contractId
+            });
+            message.success('Thêm thành viên thành công!');
+        } catch (error) {
+            message.error('Có lỗi xảy ra khi thêm thành viên!');
+        } finally {
+            setLoading(false);
         }
-
-        onAddMembers({
-            customers: existCustomers.filter(v => {
-                return values.customers.some(v2 => v2.phone === v.phone);
-            }), contractId
-        });
     };
 
-    const handleChangeOwner = () => {
-        onChangeOwner({customerId: selectedOwner, contractId});
+    const handleChangeOwner = async () => {
+        try {
+            setLoading(true);
+            await onChangeOwner({customerId: selectedOwner, contractId});
+            message.success('Đổi chủ phòng thành công!');
+        } catch (error) {
+            message.error('Có lỗi xảy ra khi đổi chủ phòng!');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleLeaveRoom = () => {
-        if (selectedLeaveMember && checkoutDate) {
-            onLeave({customerId: selectedLeaveMember, contractId, checkoutDate});
+    const handleLeaveRoom = async () => {
+        try {
+            setLoading(true);
+            if (selectedLeaveMember && checkoutDate) {
+                await onLeave({customerId: selectedLeaveMember, contractId, checkoutDate});
+                message.success('Rời phòng thành công!');
+            }
+        } catch (error) {
+            message.error('Có lỗi xảy ra khi xử lý rời phòng!');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -58,9 +82,11 @@ const ModalEditMembers = ({visible, onClose, contract, onAddMembers, onChangeOwn
         <Modal
             title="Chỉnh sửa thành viên hợp đồng"
             visible={visible}
-            onCancel={onClose}
+            onCancel={() => !loading && onClose()}
             footer={null}
             width={800}
+            closable={!loading}
+            maskClosable={!loading}
         >
             <Tabs defaultActiveKey="1">
                 {/* Tab 1: Thêm thành viên */}
@@ -212,8 +238,8 @@ const ModalEditMembers = ({visible, onClose, contract, onAddMembers, onChangeOwn
                                                         return;
                                                     }
 
-                                                    const birthDay = selectedCustomer.birthday.split("/");
-                                                    const idDate = selectedCustomer.idDate.split("/");
+                                                    const birthDay = selectedCustomer.birthday?.split("/");
+                                                    const idDate = selectedCustomer.idDate?.split("/");
                                                     add({
                                                         id: selectedCustomer.id,
                                                         name: selectedCustomer.name,
@@ -259,7 +285,7 @@ const ModalEditMembers = ({visible, onClose, contract, onAddMembers, onChangeOwn
                             )}
                         </Form.List>
 
-                        <Button type="primary" htmlType="submit" block>
+                        <Button type="primary" htmlType="submit" block loading={loading}>
                             Cập nhật danh sách
                         </Button>
                     </Form>
@@ -283,6 +309,7 @@ const ModalEditMembers = ({visible, onClose, contract, onAddMembers, onChangeOwn
                         block
                         disabled={!selectedOwner}
                         onClick={handleChangeOwner}
+                        loading={loading}
                     >
                         Đổi chủ phòng
                     </Button>
@@ -312,6 +339,7 @@ const ModalEditMembers = ({visible, onClose, contract, onAddMembers, onChangeOwn
                         block
                         disabled={!selectedLeaveMember || !checkoutDate}
                         onClick={handleLeaveRoom}
+                        loading={loading}
                     >
                         Xác nhận rời phòng
                     </Button>

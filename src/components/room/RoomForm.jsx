@@ -1,4 +1,4 @@
-import {Form, Input, Modal, Select} from 'antd';
+import {Form, Input, Modal, Select, message} from 'antd';
 import {useEffect, useState} from "react";
 import ReactQuill from 'react-quill'; // Import the editor
 import 'react-quill/dist/quill.snow.css';
@@ -37,8 +37,11 @@ const RoomForm = ({ visible, isEditMode, currentRoom, onSubmit, onCancel }) => {
             setLoading(true);
             const values = await form.validateFields();
             await onSubmit({ ...values, description });  // Include description in the form submission
+            message.success(isEditMode ? 'Cập nhật phòng thành công!' : 'Thêm mới phòng thành công!');
+            form.resetFields();
         } catch (error) {
             console.log('Validation Failed:', error);
+            message.error('Có lỗi xảy ra. Vui lòng thử lại!');
         } finally {
             setLoading(false);
         }

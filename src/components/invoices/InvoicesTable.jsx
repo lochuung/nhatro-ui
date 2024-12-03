@@ -19,6 +19,7 @@ const InvoicesTable = ({
     onUpdate, // Add this prop to handle refresh
 }) => {
     const [paymentModal, setPaymentModal] = useState({ visible: false, invoice: null, loading: false });
+    const [printingId, setPrintingId] = useState(null);
 
     const handlePayment = (invoice) => {
         setPaymentModal({ visible: true, invoice, loading: false });
@@ -35,6 +36,15 @@ const InvoicesTable = ({
             setPaymentModal(prev => ({ ...prev, loading: false }));
             message.error('Cập nhật thanh toán thất bại');
             console.error('Payment update failed:', error);
+        }
+    };
+
+    const handlePrint = async (id) => {
+        setPrintingId(id);
+        try {
+            await onPrint(id);
+        } finally {
+            setPrintingId(null);
         }
     };
 
@@ -95,9 +105,10 @@ const InvoicesTable = ({
                             <Menu.Item
                                 key="print-1"
                                 icon={<AiOutlinePrinter />}
-                                onClick={() => onPrint(row.original.id)}
+                                onClick={() => handlePrint(row.original.id)}
+                                disabled={printingId === row.original.id}
                             >
-                                In
+                                {printingId === row.original.id ? 'Đang tải...' : 'In'}
                             </Menu.Item>
                             <Menu.Divider />
                             <Menu.Item
@@ -137,7 +148,7 @@ const InvoicesTable = ({
                 },
             },
         ],
-        [openForm, openDeleteConfirm]
+        [openForm, openDeleteConfirm, printingId]
     );
 
     const data = useMemo(() => invoices, [invoices]);

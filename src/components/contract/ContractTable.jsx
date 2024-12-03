@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, {useMemo, useState} from "react";
 import SortableTable from "../SortableTable.jsx";
 import {Button, Dropdown, Menu} from "antd";
 import {DeleteOutlined, EyeOutlined, FileTextOutlined, LogoutOutlined, MoreOutlined} from "@ant-design/icons";
@@ -15,6 +15,17 @@ const ContractTable = ({
                            onSort,
                            currentSort
                        }) => {
+    const [printingId, setPrintingId] = useState(null);
+
+    const handlePrint = async (id) => {
+        setPrintingId(id);
+        try {
+            await onPrint(id);
+        } finally {
+            setPrintingId(null);
+        }
+    };
+
     const columns = useMemo(() => [
         {Header: "Tên phòng", accessor: "room.name"},
         {Header: "Mã phòng", accessor: "room.code"},
@@ -64,9 +75,10 @@ const ContractTable = ({
                         <Menu.Item
                             key={"print" + row.original.id}
                             icon={<MdDownload style={{color: '#1890ff'}}/>}
-                            onClick={() => onPrint(row.original.id)}
+                            onClick={() => handlePrint(row.original.id)}
+                            disabled={printingId === row.original.id}
                         >
-                            Tải hợp đồng
+                            {printingId === row.original.id ? 'Đang tải...' : 'Tải hợp đồng'}
                         </Menu.Item>
                         <Menu.Divider/>
                         <Menu.Item

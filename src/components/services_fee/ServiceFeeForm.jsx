@@ -1,4 +1,4 @@
-import {Form, Input, Modal} from "antd";
+import {Form, Input, Modal, message} from "antd";
 import {useState} from "react";
 import ReactQuill from "react-quill";
 import CurrencyInput from "../CurrencyInput.jsx";
@@ -14,8 +14,11 @@ const ServiceFeeForm = ({visible, isEditMode, currentServiceFee, onSubmit, onCan
             setLoading(true);
             const values = await form.validateFields();
             await onSubmit({...values, description});
+            message.success(isEditMode ? 'Cập nhật dịch vụ thành công!' : 'Thêm mới dịch vụ thành công!');
+            form.resetFields();
         } catch (error) {
             console.log('Validation Failed:', error);
+            message.error('Có lỗi xảy ra. Vui lòng thử lại!');
         } finally {
             setLoading(false);
         }

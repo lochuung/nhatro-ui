@@ -1,22 +1,27 @@
-import React from "react";
-import {Button, DatePicker, Form, Modal} from "antd";
+import React, {useState} from "react";
+import {Button, DatePicker, Form, Modal, message} from "antd";
 import dayjs from '../../utils/locale-custom.js';
 
 const ModalCheckout = ({visible, onClose, onSubmit, contract}) => {
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
 
     const handleOk = async () => {
         try {
+            setLoading(true);
             const values = await form.validateFields();
-            // Chuẩn hóa dữ liệu trước khi gửi
             const formattedValues = {
                 contractId: contract?.id,
                 checkoutDate: values.checkoutDate.format("YYYY-MM-DD"),
             };
-            onSubmit(formattedValues); // Gửi dữ liệu lên server
-            form.resetFields(); // Reset form sau khi gửi
+            await onSubmit(formattedValues);
+            message.success('Trả phòng thành công!');
+            form.resetFields();
         } catch (error) {
             console.error("Validation Failed:", error);
+            message.error('Có lỗi xảy ra. Vui lòng thử lại!');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -25,19 +30,23 @@ const ModalCheckout = ({visible, onClose, onSubmit, contract}) => {
             title="Trả phòng"
             visible={visible}
             onCancel={() => {
-                form.resetFields(); // Reset form khi đóng modal
-                onClose();
+                if (!loading) {
+                    form.resetFields();
+                    onClose();
+                }
             }}
             footer={[
-                <Button key="cancel" onClick={() => onClose()}>
+                <Button key="cancel" onClick={() => onClose()} disabled={loading}>
                     Hủy
                 </Button>,
-                <Button key="submit" type="primary" onClick={handleOk}>
+                <Button key="submit" type="primary" onClick={handleOk} loading={loading}>
                     Xác nhận
                 </Button>,
             ]}
+            closable={!loading}
+            maskClosable={!loading}
         >
-            <Form form={form} layout="vertical">
+            <Form form={form} layout="vertical" disabled={loading}>
                 {/* Ngày trả phòng */}
                 <Form.Item
                     label="Ngày trả phòng"
