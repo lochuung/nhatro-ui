@@ -1,5 +1,5 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {Button, Form, Input, Spin} from "antd";
+import {Button, Form, Input, Spin, message} from "antd"; // Add message import
 import React, {useState} from "react";
 import useSettingQuery from "../hooks/useSettingQuery.js";
 import SettingServices from "../services/SettingServices.js";
@@ -17,6 +17,9 @@ const Settings = () => {
     const settings = data?.settings || [];
 
     const handleAddSetting = () => {
+        setIsEditing(false);  // Close edit form if open
+        setSelectedSetting(null);
+        form.resetFields();
         setIsAdding(true);
     };
 
@@ -27,22 +30,40 @@ const Settings = () => {
         onSuccess: () => {
             queryClient.invalidateQueries("settings");
             setIsAdding(false);
+            setIsEditing(false);
+            form.resetFields();
+            message.success(isEditing ? 'Cập nhật cài đặt thành công!' : 'Thêm cài đặt thành công!');
+        },
+        onError: (error) => {
+            message.error('Có lỗi xảy ra: ' + error.message);
         }
-    })
+    });
 
-    const handleSaveSetting = async (values) => {
+    const handleSaveSetting = async () => {
         try {
             const values = await form.validateFields();
             updateMutation.mutate(values);
         } catch (error) {
-            console.log(error);
+            message.error('Vui lòng kiểm tra lại thông tin!');
         }
     };
 
     const handleRowClick = (setting) => {
-        form.setFieldsValue({ key: setting.key, value: setting.value });
+        setIsAdding(false);  // Close add form if open
+        form.setFieldsValue({ 
+            id: setting.id,
+            key: setting.key, 
+            value: setting.value 
+        });
         setSelectedSetting(setting);
         setIsEditing(true);
+    };
+
+    const handleCancel = () => {
+        setIsEditing(false);
+        setIsAdding(false);
+        setSelectedSetting(null);
+        form.resetFields();
     };
 
     const title = "Cài đặt";
@@ -64,7 +85,7 @@ const Settings = () => {
                         <div className="card-body">
                             {isLoading ? (
                                 <div className="text-center my-4">
-                                    <Spin/>
+                                    <Spin size="large" />
                                 </div>
                             ) : isError ? (
                                 <div className="text-center my-4">
@@ -75,39 +96,63 @@ const Settings = () => {
                                     <h3>Không tìm thấy cài đặt nào</h3>
                                 </div>
                             ) : (
-                                <table className="table align-middle table-hover table-nowrap mb-0">
-                                    <thead className="thead-light">
-                                    <tr>
-                                        <th>Key</th>
-                                        <th>Value</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {settingsArray.map((setting) => (
-                                        <tr key={setting.id} onClick={() => handleRowClick(setting)}
-                                            style={{cursor: "pointer"}}>
-                                            <td>{setting.key}</td>
-                                            <td>{setting.value}</td>
+                                <>
+                                    <table className="table align-middle table-hover table-nowrap mb-0">
+                                        <thead className="thead-light">
+                                        <tr>
+                                            <th>Key</th>
+                                            <th>Value</th>
                                         </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                        {settingsArray.map((setting) => (
+                                            <tr key={setting.id} onClick={() => handleRowClick(setting)}
+                                                style={{cursor: "pointer"}}>
+                                                <td>{setting.key}</td>
+                                                <td>{setting.value}</td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
+                                    <div className="d-flex justify-content-end mt-4">
+                                        <Button 
+                                            type="primary" 
+                                            onClick={handleAddSetting}
+                                            disabled={isLoading || updateMutation.isLoading}
+                                        >
+                                            {isEditing ? 'Thêm mới' : 'Cập nhật cài đặt'}
+                                        </Button>
+                                    </div>
+                                </>
                             )}
-                            <div className="d-flex justify-content-end mt-4">
-                                <Button type="primary" onClick={handleAddSetting}>Cập nhật cài đặt</Button>
-                            </div>
                         </div>
-                        {isAdding && (
+                        {(isAdding || isEditing) && (
                             <div className="card-footer border-0">
                                 <Form form={form} layout="inline" onFinish={handleSaveSetting}>
-                                <Form.Item name="key" rules={[{required: true, message: "Vui lòng nhập key"}]}>
+                                    <Form.Item name="id" hidden>
+                                        <Input />
+                                    </Form.Item>
+                                    <Form.Item name="key" rules={[{required: true, message: "Vui lòng nhập key"}]}>
                                         <Input placeholder="Key"/>
                                     </Form.Item>
                                     <Form.Item name="value" rules={[{required: true, message: "Vui lòng nhập value"}]}>
                                         <Input placeholder="Value"/>
                                     </Form.Item>
-                                    <Button type="primary" htmlType="submit">Lưu</Button>
-                                    <Button onClick={() => setIsAdding(false)} className="ms-2">Hủy</Button>
+                                    <Button 
+                                        type="primary" 
+                                        htmlType="submit"
+                                        loading={updateMutation.isLoading}
+                                        disabled={isLoading}
+                                    >
+                                        {isEditing ? 'Cập nhật' : 'Lưu'}
+                                    </Button>
+                                    <Button 
+                                        onClick={handleCancel} 
+                                        className="ms-2"
+                                        disabled={updateMutation.isLoading || isLoading}
+                                    >
+                                        Hủy
+                                    </Button>
                                 </Form>
                             </div>
                         )}

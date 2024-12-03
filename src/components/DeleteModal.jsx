@@ -1,4 +1,4 @@
-import {Modal} from 'antd';
+import {Modal, message} from 'antd';
 import {useState} from 'react';
 
 const DeleteModal = ({visible, onConfirm, onCancel}) => {
@@ -8,6 +8,9 @@ const DeleteModal = ({visible, onConfirm, onCancel}) => {
         try {
             setLoading(true);
             await onConfirm();
+            message.success('Xóa thành công!');
+        } catch (error) {
+            message.error('Có lỗi xảy ra khi xóa. Vui lòng thử lại!');
         } finally {
             setLoading(false);
         }

@@ -32,8 +32,8 @@ export default function Login() {
                 navigate('/');
             }
         } catch (error) {
-            console.log(error);
-            // toast.error('Đăng nhập thất bại!');
+            // console.log(error);
+            toast.error('Đăng nhập thất bại!');
         }
         setIsDone(true);
     };

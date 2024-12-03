@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space} from "antd";
+import {Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space, message} from "antd";
 import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
 import CurrencyInput from "../CurrencyInput";
@@ -22,24 +22,18 @@ const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
                 ...values,
                 startDate: values.startDate ? values.startDate.format("YYYY-MM-DD") : null,
                 roomId: room.id,
-            };
-            // format date string
-            formattedValues["customers"] = formattedValues["customers"].map((customer) => {
-                return {
+                customers: values.customers.map((customer) => ({
                     ...customer,
                     birthday: customer.birthday ? customer.birthday.format("DD/MM/YYYY") : null,
                     idDate: customer.idDate ? customer.idDate.format("DD/MM/YYYY") : null,
-                };
-            });
-            try {
-                await onSubmit(formattedValues);
-                // form.resetFields();
-            } catch (error) {
-                // console.error("Failed to create contract:", error);
-                // toast.error(error.response.data.description);
-            }
+                }))
+            };
+            await onSubmit(formattedValues);
+            message.success('Thuê phòng thành công!');
+            form.resetFields();
         } catch (error) {
-            console.error("Validation Failed:", error);
+            console.error("Failed:", error);
+            message.error(error.response?.data?.description || 'Có lỗi xảy ra. Vui lòng thử lại!');
         } finally {
             setLoading(false);
         }
@@ -304,8 +298,10 @@ const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
                                                 return;
                                             }
 
-                                            const birthDay = selectedCustomer.birthday.split("/");
-                                            const idDate = selectedCustomer.idDate.split("/");
+                                            // Add null checks and default values for dates
+                                            const birthDay = selectedCustomer.birthday?.split("/") || [];
+                                            const idDate = selectedCustomer.idDate?.split("/") || [];
+                                            
                                             add({
                                                 id: selectedCustomer.id,
                                                 name: selectedCustomer.name,
@@ -313,14 +309,14 @@ const ModalRentRoom = ({visible, onClose, onSubmit, room}) => {
                                                 email: selectedCustomer.email,
                                                 idNumber: selectedCustomer.idNumber,
                                                 address: selectedCustomer.address,
-                                                birthday: selectedCustomer.birthday
+                                                birthday: birthDay.length === 3 
                                                     ? dayjs(`${birthDay[2]}-${birthDay[1]}-${birthDay[0]}`)
                                                     : undefined,
                                                 idPlace: selectedCustomer.idPlace,
-                                                idDate: selectedCustomer.idDate
+                                                idDate: idDate.length === 3
                                                     ? dayjs(`${idDate[2]}-${idDate[1]}-${idDate[0]}`)
                                                     : undefined,
-                                                isOldCustomer: true, // Đánh dấu là khách cũ
+                                                isOldCustomer: true,
                                             });
                                             form.setFieldsValue({existCustomer: undefined});
                                         }

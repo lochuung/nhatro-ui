@@ -9,14 +9,17 @@ const ServiceTable = ({services, loading, openServiceFeeForm, openDeleteConfirm,
             {
                 Header: 'Tên dịch vụ',
                 accessor: 'name', // column id
+                sortable: true
             },
             {
                 Header: 'Mã dịch vụ',
                 accessor: 'code',
+                sortable: true
             },
             {
                 Header: 'Giá',
                 accessor: 'unitPrice',
+                sortable: true,
                 Cell: ({value}) =>
                     new Intl.NumberFormat('vi-VN', {
                         style: 'currency',

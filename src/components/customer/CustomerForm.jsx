@@ -1,4 +1,4 @@
-import {DatePicker, Form, Input, message, Modal, Switch, Upload} from 'antd';
+import {DatePicker, Form, Input, message, Modal, Switch, Upload, Spin} from 'antd';
 import {useEffect, useState} from "react";
 import ReactQuill from 'react-quill'; // Import the editor
 import 'react-quill/dist/quill.snow.css';
@@ -15,6 +15,7 @@ const CustomerForm = ({visible, isEditMode, customer, onSubmit, onCancel}) => {
     const [previewImage, setPreviewImage] = useState(''); // URL ảnh xem trước
     const [previewTitle, setPreviewTitle] = useState(''); // Tiêu đề ảnh xem trước
     const [loading, setLoading] = useState(false);
+    const [uploadLoading, setUploadLoading] = useState(false);
 
     useEffect(() => {
         if (visible) {
@@ -57,8 +58,11 @@ const CustomerForm = ({visible, isEditMode, customer, onSubmit, onCancel}) => {
                 birthday: values.birthday ? values.birthday.format("DD/MM/YYYY") : null,
                 idDate: values.idDate ? values.idDate.format("DD/MM/YYYY") : null,
             });
+            message.success(isEditMode ? 'Cập nhật khách hàng thành công!' : 'Thêm mới khách hàng thành công!');
+            form.resetFields();
         } catch (error) {
             console.log('Validation Failed:', error);
+            message.error('Có lỗi xảy ra. Vui lòng thử lại!');
         } finally {
             setLoading(false);
         }
@@ -66,6 +70,7 @@ const CustomerForm = ({visible, isEditMode, customer, onSubmit, onCancel}) => {
 
     const handleUpload = async ({file}) => {
         try {
+            setUploadLoading(true);
             const response = await CustomerImageServices.uploadImage({
                 id: customer?.id, // ID của customer (nếu đang chỉnh sửa)
                 type: "CCCD",
@@ -82,8 +87,12 @@ const CustomerForm = ({visible, isEditMode, customer, onSubmit, onCancel}) => {
                     url: `${ApiUrl.fileUrl}/images/${uploadedImageKey}`, // URL của ảnh
                 },
             ]);
+            message.success('Tải ảnh lên thành công!');
         } catch (error) {
             console.error("Upload failed:", error);
+            message.error('Tải ảnh lên thất bại!');
+        } finally {
+            setUploadLoading(false);
         }
     };
 
@@ -160,25 +169,28 @@ const CustomerForm = ({visible, isEditMode, customer, onSubmit, onCancel}) => {
                         isEditMode &&
                         (<Form.Item
                             label="Ảnh CMND/CCCD">
-                            <Upload
-                                customRequest={handleUpload}
-                                listType="picture-card"
-                                fileList={fileList}
-                                onRemove={handleRemove}
-                                onPreview={handlePreview} // Sự kiện xem trước
-                                showUploadList={{
-                                    showRemoveIcon: true,
-                                    showPreviewIcon: true, // Hiển thị nút xem trước
-                                }}
-                                multiple
-                            >
-                                {fileList.length >= 5 ? null : (
-                                    <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-                                        <UploadOutlined style={{fontSize: 24}}/>
-                                        <div style={{fontSize: 12}}>Tải lên</div>
-                                    </div>
-                                )}
-                            </Upload>
+                            <Spin spinning={uploadLoading}>
+                                <Upload
+                                    customRequest={handleUpload}
+                                    listType="picture-card"
+                                    fileList={fileList}
+                                    onRemove={handleRemove}
+                                    onPreview={handlePreview} // Sự kiện xem trước
+                                    showUploadList={{
+                                        showRemoveIcon: true,
+                                        showPreviewIcon: true, // Hiển thị nút xem trước
+                                    }}
+                                    multiple
+                                    disabled={uploadLoading}
+                                >
+                                    {fileList.length >= 5 ? null : (
+                                        <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                                            <UploadOutlined style={{fontSize: 24}}/>
+                                            <div style={{fontSize: 12}}>{uploadLoading ? 'Đang tải...' : 'Tải lên'}</div>
+                                        </div>
+                                    )}
+                                </Upload>
+                            </Spin>
                         </Form.Item>)
                     }
 
